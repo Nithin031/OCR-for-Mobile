@@ -1,0 +1,71 @@
+{
+  "det": {
+    "file": "inference.onnx",
+    "ir_version": 10,
+    "opset_import": {
+      "ai.onnx": 14
+    },
+    "producer": "",
+    "inputs": [
+      {
+        "name": "x",
+        "shape": [
+          "DynamicDimension.0",
+          3,
+          "DynamicDimension.1",
+          "DynamicDimension.2"
+        ],
+        "type": "tensor(float)"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "fetch_name_0",
+        "shape": [
+          "ConvTranspose_459_o0__d0",
+          1,
+          "ConvTranspose_459_o0__d2",
+          "ConvTranspose_459_o0__d3"
+        ],
+        "type": "tensor(float)"
+      }
+    ]
+  },
+  "rec": {
+    "file": "inference.onnx",
+    "ir_version": 6,
+    "opset_import": {
+      "ai.onnx": 11
+    },
+    "producer": "",
+    "inputs": [
+      {
+        "name": "x",
+        "shape": [
+          "DynamicDimension.0",
+          3,
+          48,
+          "DynamicDimension.1"
+        ],
+        "type": "tensor(float)"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "fetch_name_0",
+        "shape": [
+          "DynamicDimension.0",
+          "Reshape_471_o0__d2",
+          18710
+        ],
+        "type": "tensor(float)"
+      }
+    ],
+    "class_dim_check": {
+      "onnx_output_last_dim": 18710,
+      "expected_from_dict": 18710,
+      "dict_entries": 18708,
+      "passed": true
+    }
+  }
+}

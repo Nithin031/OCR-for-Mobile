@@ -1,0 +1,140 @@
+{
+  "det": {
+    "model_name": {
+      "value": "PP-OCRv6_small_det",
+      "source": "det/inference.yml: Global.model_name"
+    },
+    "preprocess_ops": {
+      "value": [
+        "DecodeImage",
+        "DetLabelEncode",
+        "DetResizeForTest",
+        "NormalizeImage",
+        "ToCHWImage",
+        "KeepKeys"
+      ],
+      "source": "det/inference.yml: PreProcess.transform_ops"
+    },
+    "img_mode": {
+      "value": "BGR",
+      "source": "det/inference.yml: PreProcess.transform_ops[0].DecodeImage.img_mode"
+    },
+    "det_resize_config": {
+      "value": {},
+      "source": "det/inference.yml: PreProcess.transform_ops[2].DetResizeForTest"
+    },
+    "normalize_mean": {
+      "value": [
+        0.485,
+        0.456,
+        0.406
+      ],
+      "source": "det/inference.yml: PreProcess.transform_ops[3].NormalizeImage.mean"
+    },
+    "normalize_std": {
+      "value": [
+        0.229,
+        0.224,
+        0.225
+      ],
+      "source": "det/inference.yml: PreProcess.transform_ops[3].NormalizeImage.std"
+    },
+    "normalize_scale": {
+      "value": 0.00392156862745098,
+      "source": "det/inference.yml: PreProcess.transform_ops[3].NormalizeImage.scale (string '1./255.', evaluated like PaddleX does)"
+    },
+    "normalize_order": {
+      "value": "hwc",
+      "source": "det/inference.yml: PreProcess.transform_ops[3].NormalizeImage.order"
+    },
+    "db_thresh": {
+      "value": 0.2,
+      "source": "det/inference.yml: PostProcess.thresh"
+    },
+    "db_box_thresh": {
+      "value": 0.45,
+      "source": "det/inference.yml: PostProcess.box_thresh"
+    },
+    "db_unclip_ratio": {
+      "value": 1.4,
+      "source": "det/inference.yml: PostProcess.unclip_ratio"
+    },
+    "db_max_candidates": {
+      "value": 3000,
+      "source": "det/inference.yml: PostProcess.max_candidates"
+    },
+    "db_use_dilation": {
+      "value": null,
+      "source": "det/inference.yml: PostProcess.use_dilation absent -> PaddleX default applies"
+    },
+    "db_score_mode": {
+      "value": null,
+      "source": "det/inference.yml: PostProcess.score_mode absent -> PaddleX default applies"
+    },
+    "db_box_type": {
+      "value": null,
+      "source": "det/inference.yml: PostProcess.box_type absent -> PaddleX default applies"
+    }
+  },
+  "rec": {
+    "model_name": {
+      "value": "PP-OCRv6_small_rec",
+      "source": "rec/inference.yml: Global.model_name"
+    },
+    "preprocess_ops": {
+      "value": [
+        "DecodeImage",
+        "MultiLabelEncode",
+        "RecResizeImg",
+        "KeepKeys"
+      ],
+      "source": "rec/inference.yml: PreProcess.transform_ops"
+    },
+    "img_mode": {
+      "value": "BGR",
+      "source": "rec/inference.yml: PreProcess.transform_ops[0].DecodeImage.img_mode"
+    },
+    "rec_image_shape": {
+      "value": [
+        3,
+        48,
+        320
+      ],
+      "source": "rec/inference.yml: PreProcess.transform_ops[2].RecResizeImg.image_shape  (C, H, W_min)"
+    },
+    "normalize": {
+      "value": "x = (x / 255 - 0.5) / 0.5  (per channel, CHW)",
+      "source": "not in inference.yml; hardcoded in PaddleX: D:\\tools\\reference\\.venv\\Lib\\site-packages\\paddlex\\inference\\models\\text_recognition\\processors.py:74  `resized_image = resized_image.transpose((2, 0, 1)) / 255` ; D:\\tools\\reference\\.venv\\Lib\\site-packages\\paddlex\\inference\\models\\text_recognition\\processors.py:75  `resized_image -= 0.5` ; D:\\tools\\reference\\.venv\\Lib\\site-packages\\paddlex\\inference\\models\\text_recognition\\processors.py:76  `resized_image /= 0.5`"
+    },
+    "rec_max_width": {
+      "value": 3200,
+      "source": "not in inference.yml; PaddleX D:\\tools\\reference\\.venv\\Lib\\site-packages\\paddlex\\inference\\models\\text_recognition\\processors.py:54  `self.max_imgW = 3200`"
+    },
+    "use_space_char": {
+      "value": true,
+      "source": "not in inference.yml; CTCLabelDecode default D:\\tools\\reference\\.venv\\Lib\\site-packages\\paddlex\\inference\\models\\text_recognition\\processors.py:290  `def __init__(self, character_list=None, use_space_char=True):` ; predictor passes only character_list: D:\\tools\\reference\\.venv\\Lib\\site-packages\\paddlex\\inference\\models\\text_recognition\\predictor.py:220  `character_list=kwargs.get(\"character_dict\"),`"
+    },
+    "ctc_classes": {
+      "value": 18710,
+      "source": "len(CTCLabelDecode(character_dict).character) from installed PaddleX"
+    },
+    "ctc_blank_index": {
+      "value": [
+        0
+      ],
+      "source": "D:\\tools\\reference\\.venv\\Lib\\site-packages\\paddlex\\inference\\models\\text_recognition\\processors.py:268  `return [0]  # for ctc blank` ; blank inserted at index 0 by D:\\tools\\reference\\.venv\\Lib\\site-packages\\paddlex\\inference\\models\\text_recognition\\processors.py:318  `character_list = [\"blank\"] + character_list`"
+    },
+    "space_appended_at_index": {
+      "value": 18709,
+      "source": "D:\\tools\\reference\\.venv\\Lib\\site-packages\\paddlex\\inference\\models\\text_recognition\\processors.py:121  `character_list.append(\" \")`"
+    },
+    "ctc_confidence": {
+      "value": "mean of max-prob over kept timesteps (after collapse + blank removal); 0 if none kept",
+      "source": "D:\\tools\\reference\\.venv\\Lib\\site-packages\\paddlex\\inference\\models\\text_recognition\\processors.py:253  `np.mean(conf_list).tolist(),`"
+    },
+    "character_dict": {
+      "value": "18708 entries -> rec/ppocr_keys.txt",
+      "source": "rec/inference.yml: PostProcess.character_dict"
+    }
+  }
+}

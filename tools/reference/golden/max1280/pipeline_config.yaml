@@ -1,0 +1,40 @@
+SubModules:
+  TextDetection:
+    box_thresh: 0.45
+    limit_side_len: 1280
+    limit_type: max
+    max_side_limit: 4000
+    model_dir: D:\tools\reference\models\det
+    model_name: PP-OCRv6_small_det
+    module_name: text_detection
+    thresh: 0.2
+    unclip_ratio: 1.4
+  TextLineOrientation:
+    batch_size: 6
+    model_dir: null
+    model_name: PP-LCNet_x1_0_textline_ori
+    module_name: textline_orientation
+  TextRecognition:
+    batch_size: 6
+    model_dir: D:\tools\reference\models\rec
+    model_name: PP-OCRv6_small_rec
+    module_name: text_recognition
+    score_thresh: 0.0
+SubPipelines:
+  DocPreprocessor:
+    SubModules:
+      DocOrientationClassify:
+        model_dir: null
+        model_name: PP-LCNet_x1_0_doc_ori
+        module_name: doc_text_orientation
+      DocUnwarping:
+        model_dir: null
+        model_name: UVDoc
+        module_name: image_unwarping
+    pipeline_name: doc_preprocessor
+    use_doc_orientation_classify: false
+    use_doc_unwarping: false
+pipeline_name: OCR
+text_type: general
+use_doc_preprocessor: false
+use_textline_orientation: false

@@ -1,0 +1,530 @@
+[
+  {
+    "filename": "gov_form_itr1.png",
+    "source_url": "https://www.incometax.gov.in/iec/foportal/sites/default/files/2023-04/ITR1_Notified%20Form%20AY%202023-24.pdf",
+    "source_organization": "Income Tax Department, Government of India",
+    "document_type": "Income Tax Return Form ITR-1 SAHAJ AY 2023-24",
+    "language": "English",
+    "characteristics": [
+      "dense_text",
+      "checkboxes",
+      "tables",
+      "form_fields",
+      "numbers",
+      "dates",
+      "small_font"
+    ],
+    "original_format": "pdf",
+    "page_number": 1,
+    "synthetic": false
+  },
+  {
+    "filename": "gov_form_itr4_p00.png",
+    "source_url": "https://www.incometax.gov.in/iec/foportal/sites/default/files/2023-04/ITR4_Notified%20Form%20AY%202023-24.pdf",
+    "source_organization": "Income Tax Department, Government of India",
+    "document_type": "Income Tax Return Form ITR-4 SUGAM AY 2023-24 (page 1)",
+    "language": "English",
+    "characteristics": [
+      "dense_text",
+      "tables",
+      "form_fields",
+      "numbers",
+      "multiple_sections"
+    ],
+    "original_format": "pdf",
+    "page_number": 1,
+    "synthetic": false
+  },
+  {
+    "filename": "gov_form_itr4_p02.png",
+    "source_url": "https://www.incometax.gov.in/iec/foportal/sites/default/files/2023-04/ITR4_Notified%20Form%20AY%202023-24.pdf",
+    "source_organization": "Income Tax Department, Government of India",
+    "document_type": "Income Tax Return Form ITR-4 SUGAM AY 2023-24 (page 3)",
+    "language": "English",
+    "characteristics": [
+      "dense_text",
+      "tables",
+      "form_fields",
+      "numbers"
+    ],
+    "original_format": "pdf",
+    "page_number": 3,
+    "synthetic": false
+  },
+  {
+    "filename": "gov_form_itr2.png",
+    "source_url": "https://www.incometax.gov.in/iec/foportal/sites/default/files/2023-04/ITR2_Notified%20Form%20AY%202023-24.pdf",
+    "source_organization": "Income Tax Department, Government of India",
+    "document_type": "Income Tax Return Form ITR-2 AY 2023-24 (page 2)",
+    "language": "English",
+    "characteristics": [
+      "dense_text",
+      "multi_column",
+      "small_font",
+      "tables"
+    ],
+    "original_format": "pdf",
+    "page_number": 2,
+    "synthetic": false
+  },
+  {
+    "filename": "gov_form_aadhaar_form1.png",
+    "source_url": "https://uidai.gov.in/images/Form_1_Eng.pdf",
+    "source_organization": "UIDAI (Unique Identification Authority of India)",
+    "document_type": "Aadhaar Enrolment and Update Form (Adult) - Form 1",
+    "language": "English, Hindi",
+    "characteristics": [
+      "bilingual",
+      "checkboxes",
+      "form_fields",
+      "addresses",
+      "ids",
+      "hindi_script",
+      "tables"
+    ],
+    "original_format": "pdf",
+    "page_number": 1,
+    "synthetic": false
+  },
+  {
+    "filename": "gov_form_voter6.png",
+    "source_url": "https://voters.eci.gov.in/formspdf/Form_6_English.pdf",
+    "source_organization": "Election Commission of India",
+    "document_type": "Form 6 - Application for Voter Registration",
+    "language": "English",
+    "characteristics": [
+      "form_fields",
+      "checkboxes",
+      "addresses",
+      "dates",
+      "ids"
+    ],
+    "original_format": "pdf",
+    "page_number": 1,
+    "synthetic": false
+  },
+  {
+    "filename": "gov_form_irs1040.png",
+    "source_url": "https://www.irs.gov/pub/irs-prior/f1040--2023.pdf",
+    "source_organization": "Internal Revenue Service, United States",
+    "document_type": "IRS Form 1040 - U.S. Individual Income Tax Return 2023",
+    "language": "English",
+    "characteristics": [
+      "dense_text",
+      "tables",
+      "form_fields",
+      "numbers",
+      "checkboxes",
+      "dates",
+      "two_column"
+    ],
+    "original_format": "pdf",
+    "page_number": 1,
+    "synthetic": false
+  },
+  {
+    "filename": "gov_form_irs_schedc.png",
+    "source_url": "https://www.irs.gov/pub/irs-prior/f1040sc--2023.pdf",
+    "source_organization": "Internal Revenue Service, United States",
+    "document_type": "IRS Schedule C (Form 1040) - Business Profit or Loss 2023",
+    "language": "English",
+    "characteristics": [
+      "dense_text",
+      "multi_column",
+      "tables",
+      "numeric_heavy",
+      "small_font"
+    ],
+    "original_format": "pdf",
+    "page_number": 1,
+    "synthetic": false
+  },
+  {
+    "filename": "gov_form_irs_scheda.png",
+    "source_url": "https://www.irs.gov/pub/irs-prior/f1040sa--2023.pdf",
+    "source_organization": "Internal Revenue Service, United States",
+    "document_type": "IRS Schedule A (Form 1040) - Itemized Deductions 2023",
+    "language": "English",
+    "characteristics": [
+      "form_fields",
+      "numeric_heavy",
+      "small_font",
+      "checkboxes"
+    ],
+    "original_format": "pdf",
+    "page_number": 1,
+    "synthetic": false
+  },
+  {
+    "filename": "gov_form_irs_w4.png",
+    "source_url": "https://www.irs.gov/pub/irs-pdf/fw4.pdf",
+    "source_organization": "Internal Revenue Service, United States",
+    "document_type": "IRS Form W-4 - Employee's Withholding Certificate",
+    "language": "English",
+    "characteristics": [
+      "form_fields",
+      "checkboxes",
+      "tables",
+      "instructions"
+    ],
+    "original_format": "pdf",
+    "page_number": 1,
+    "synthetic": false
+  },
+  {
+    "filename": "gov_form_irs_ss4.png",
+    "source_url": "https://www.irs.gov/pub/irs-pdf/fss4.pdf",
+    "source_organization": "Internal Revenue Service, United States",
+    "document_type": "IRS Form SS-4 - Application for Employer Identification Number",
+    "language": "English",
+    "characteristics": [
+      "form_fields",
+      "checkboxes",
+      "dense_text",
+      "ids",
+      "small_font"
+    ],
+    "original_format": "pdf",
+    "page_number": 1,
+    "synthetic": false
+  },
+  {
+    "filename": "gov_passport_booklet_p01.png",
+    "source_url": "https://www.passportindia.gov.in/AppOnlineProject/pdf/ApplicationformInstructionBooklet-V3.0.pdf",
+    "source_organization": "Passport Seva, Ministry of External Affairs, Government of India",
+    "document_type": "Passport Application Instruction Booklet V3.0 (page 2)",
+    "language": "English, Hindi",
+    "characteristics": [
+      "dense_text",
+      "bilingual",
+      "instructions",
+      "tables",
+      "small_font",
+      "hindi_script"
+    ],
+    "original_format": "pdf",
+    "page_number": 2,
+    "synthetic": false
+  },
+  {
+    "filename": "gov_passport_booklet_p04.png",
+    "source_url": "https://www.passportindia.gov.in/AppOnlineProject/pdf/ApplicationformInstructionBooklet-V3.0.pdf",
+    "source_organization": "Passport Seva, Ministry of External Affairs, Government of India",
+    "document_type": "Passport Application Instruction Booklet V3.0 (page 5)",
+    "language": "English, Hindi",
+    "characteristics": [
+      "dense_text",
+      "bilingual",
+      "tables",
+      "form_fields",
+      "hindi_script"
+    ],
+    "original_format": "pdf",
+    "page_number": 5,
+    "synthetic": false
+  },
+  {
+    "filename": "gov_form_angle_m_itr1.png",
+    "source_url": "https://www.incometax.gov.in/iec/foportal/sites/default/files/2023-04/ITR1_Notified%20Form%20AY%202023-24.pdf",
+    "source_organization": "Income Tax Department, Government of India",
+    "document_type": "Income Tax Return Form ITR-1 SAHAJ AY 2023-24",
+    "language": "English",
+    "characteristics": [
+      "dense_text",
+      "checkboxes",
+      "tables",
+      "form_fields",
+      "numbers",
+      "dates",
+      "small_font"
+    ],
+    "original_format": "synthetic",
+    "page_number": 1,
+    "synthetic": true,
+    "synthetic_transform": "rotation 3.5°",
+    "derived_from": "gov_form_itr1.png"
+  },
+  {
+    "filename": "gov_form_blur_m_itr1.png",
+    "source_url": "https://www.incometax.gov.in/iec/foportal/sites/default/files/2023-04/ITR1_Notified%20Form%20AY%202023-24.pdf",
+    "source_organization": "Income Tax Department, Government of India",
+    "document_type": "Income Tax Return Form ITR-1 SAHAJ AY 2023-24",
+    "language": "English",
+    "characteristics": [
+      "dense_text",
+      "checkboxes",
+      "tables",
+      "form_fields",
+      "numbers",
+      "dates",
+      "small_font"
+    ],
+    "original_format": "synthetic",
+    "page_number": 1,
+    "synthetic": true,
+    "synthetic_transform": "gaussian_blur k=5",
+    "derived_from": "gov_form_itr1.png"
+  },
+  {
+    "filename": "gov_form_lowres_m_itr1.png",
+    "source_url": "https://www.incometax.gov.in/iec/foportal/sites/default/files/2023-04/ITR1_Notified%20Form%20AY%202023-24.pdf",
+    "source_organization": "Income Tax Department, Government of India",
+    "document_type": "Income Tax Return Form ITR-1 SAHAJ AY 2023-24",
+    "language": "English",
+    "characteristics": [
+      "dense_text",
+      "checkboxes",
+      "tables",
+      "form_fields",
+      "numbers",
+      "dates",
+      "small_font"
+    ],
+    "original_format": "synthetic",
+    "page_number": 1,
+    "synthetic": true,
+    "synthetic_transform": "downscale 35% + upscale",
+    "derived_from": "gov_form_itr1.png"
+  },
+  {
+    "filename": "gov_form_shadow_m_itr1.png",
+    "source_url": "https://www.incometax.gov.in/iec/foportal/sites/default/files/2023-04/ITR1_Notified%20Form%20AY%202023-24.pdf",
+    "source_organization": "Income Tax Department, Government of India",
+    "document_type": "Income Tax Return Form ITR-1 SAHAJ AY 2023-24",
+    "language": "English",
+    "characteristics": [
+      "dense_text",
+      "checkboxes",
+      "tables",
+      "form_fields",
+      "numbers",
+      "dates",
+      "small_font"
+    ],
+    "original_format": "synthetic",
+    "page_number": 1,
+    "synthetic": true,
+    "synthetic_transform": "corner_shadow gradient",
+    "derived_from": "gov_form_itr1.png"
+  },
+  {
+    "filename": "gov_form_angle_r4_p00.png",
+    "source_url": "https://www.incometax.gov.in/iec/foportal/sites/default/files/2023-04/ITR4_Notified%20Form%20AY%202023-24.pdf",
+    "source_organization": "Income Tax Department, Government of India",
+    "document_type": "Income Tax Return Form ITR-4 SUGAM AY 2023-24 (page 1)",
+    "language": "English",
+    "characteristics": [
+      "dense_text",
+      "tables",
+      "form_fields",
+      "numbers",
+      "multiple_sections"
+    ],
+    "original_format": "synthetic",
+    "page_number": 1,
+    "synthetic": true,
+    "synthetic_transform": "rotation 3.5°",
+    "derived_from": "gov_form_itr4_p00.png"
+  },
+  {
+    "filename": "gov_form_blur_r4_p00.png",
+    "source_url": "https://www.incometax.gov.in/iec/foportal/sites/default/files/2023-04/ITR4_Notified%20Form%20AY%202023-24.pdf",
+    "source_organization": "Income Tax Department, Government of India",
+    "document_type": "Income Tax Return Form ITR-4 SUGAM AY 2023-24 (page 1)",
+    "language": "English",
+    "characteristics": [
+      "dense_text",
+      "tables",
+      "form_fields",
+      "numbers",
+      "multiple_sections"
+    ],
+    "original_format": "synthetic",
+    "page_number": 1,
+    "synthetic": true,
+    "synthetic_transform": "gaussian_blur k=5",
+    "derived_from": "gov_form_itr4_p00.png"
+  },
+  {
+    "filename": "gov_form_lowres_r4_p00.png",
+    "source_url": "https://www.incometax.gov.in/iec/foportal/sites/default/files/2023-04/ITR4_Notified%20Form%20AY%202023-24.pdf",
+    "source_organization": "Income Tax Department, Government of India",
+    "document_type": "Income Tax Return Form ITR-4 SUGAM AY 2023-24 (page 1)",
+    "language": "English",
+    "characteristics": [
+      "dense_text",
+      "tables",
+      "form_fields",
+      "numbers",
+      "multiple_sections"
+    ],
+    "original_format": "synthetic",
+    "page_number": 1,
+    "synthetic": true,
+    "synthetic_transform": "downscale 35% + upscale",
+    "derived_from": "gov_form_itr4_p00.png"
+  },
+  {
+    "filename": "gov_form_shadow_r4_p00.png",
+    "source_url": "https://www.incometax.gov.in/iec/foportal/sites/default/files/2023-04/ITR4_Notified%20Form%20AY%202023-24.pdf",
+    "source_organization": "Income Tax Department, Government of India",
+    "document_type": "Income Tax Return Form ITR-4 SUGAM AY 2023-24 (page 1)",
+    "language": "English",
+    "characteristics": [
+      "dense_text",
+      "tables",
+      "form_fields",
+      "numbers",
+      "multiple_sections"
+    ],
+    "original_format": "synthetic",
+    "page_number": 1,
+    "synthetic": true,
+    "synthetic_transform": "corner_shadow gradient",
+    "derived_from": "gov_form_itr4_p00.png"
+  },
+  {
+    "filename": "gov_form_angle_r4_p02.png",
+    "source_url": "https://www.incometax.gov.in/iec/foportal/sites/default/files/2023-04/ITR4_Notified%20Form%20AY%202023-24.pdf",
+    "source_organization": "Income Tax Department, Government of India",
+    "document_type": "Income Tax Return Form ITR-4 SUGAM AY 2023-24 (page 3)",
+    "language": "English",
+    "characteristics": [
+      "dense_text",
+      "tables",
+      "form_fields",
+      "numbers"
+    ],
+    "original_format": "synthetic",
+    "page_number": 3,
+    "synthetic": true,
+    "synthetic_transform": "rotation 3.5°",
+    "derived_from": "gov_form_itr4_p02.png"
+  },
+  {
+    "filename": "gov_form_blur_r4_p02.png",
+    "source_url": "https://www.incometax.gov.in/iec/foportal/sites/default/files/2023-04/ITR4_Notified%20Form%20AY%202023-24.pdf",
+    "source_organization": "Income Tax Department, Government of India",
+    "document_type": "Income Tax Return Form ITR-4 SUGAM AY 2023-24 (page 3)",
+    "language": "English",
+    "characteristics": [
+      "dense_text",
+      "tables",
+      "form_fields",
+      "numbers"
+    ],
+    "original_format": "synthetic",
+    "page_number": 3,
+    "synthetic": true,
+    "synthetic_transform": "gaussian_blur k=5",
+    "derived_from": "gov_form_itr4_p02.png"
+  },
+  {
+    "filename": "gov_form_lowres_r4_p02.png",
+    "source_url": "https://www.incometax.gov.in/iec/foportal/sites/default/files/2023-04/ITR4_Notified%20Form%20AY%202023-24.pdf",
+    "source_organization": "Income Tax Department, Government of India",
+    "document_type": "Income Tax Return Form ITR-4 SUGAM AY 2023-24 (page 3)",
+    "language": "English",
+    "characteristics": [
+      "dense_text",
+      "tables",
+      "form_fields",
+      "numbers"
+    ],
+    "original_format": "synthetic",
+    "page_number": 3,
+    "synthetic": true,
+    "synthetic_transform": "downscale 35% + upscale",
+    "derived_from": "gov_form_itr4_p02.png"
+  },
+  {
+    "filename": "gov_form_shadow_r4_p02.png",
+    "source_url": "https://www.incometax.gov.in/iec/foportal/sites/default/files/2023-04/ITR4_Notified%20Form%20AY%202023-24.pdf",
+    "source_organization": "Income Tax Department, Government of India",
+    "document_type": "Income Tax Return Form ITR-4 SUGAM AY 2023-24 (page 3)",
+    "language": "English",
+    "characteristics": [
+      "dense_text",
+      "tables",
+      "form_fields",
+      "numbers"
+    ],
+    "original_format": "synthetic",
+    "page_number": 3,
+    "synthetic": true,
+    "synthetic_transform": "corner_shadow gradient",
+    "derived_from": "gov_form_itr4_p02.png"
+  },
+  {
+    "filename": "gov_form_angle_m_itr2.png",
+    "source_url": "https://www.incometax.gov.in/iec/foportal/sites/default/files/2023-04/ITR2_Notified%20Form%20AY%202023-24.pdf",
+    "source_organization": "Income Tax Department, Government of India",
+    "document_type": "Income Tax Return Form ITR-2 AY 2023-24 (page 2)",
+    "language": "English",
+    "characteristics": [
+      "dense_text",
+      "multi_column",
+      "small_font",
+      "tables"
+    ],
+    "original_format": "synthetic",
+    "page_number": 2,
+    "synthetic": true,
+    "synthetic_transform": "rotation 3.5°",
+    "derived_from": "gov_form_itr2.png"
+  },
+  {
+    "filename": "gov_form_blur_m_itr2.png",
+    "source_url": "https://www.incometax.gov.in/iec/foportal/sites/default/files/2023-04/ITR2_Notified%20Form%20AY%202023-24.pdf",
+    "source_organization": "Income Tax Department, Government of India",
+    "document_type": "Income Tax Return Form ITR-2 AY 2023-24 (page 2)",
+    "language": "English",
+    "characteristics": [
+      "dense_text",
+      "multi_column",
+      "small_font",
+      "tables"
+    ],
+    "original_format": "synthetic",
+    "page_number": 2,
+    "synthetic": true,
+    "synthetic_transform": "gaussian_blur k=5",
+    "derived_from": "gov_form_itr2.png"
+  },
+  {
+    "filename": "gov_form_lowres_m_itr2.png",
+    "source_url": "https://www.incometax.gov.in/iec/foportal/sites/default/files/2023-04/ITR2_Notified%20Form%20AY%202023-24.pdf",
+    "source_organization": "Income Tax Department, Government of India",
+    "document_type": "Income Tax Return Form ITR-2 AY 2023-24 (page 2)",
+    "language": "English",
+    "characteristics": [
+      "dense_text",
+      "multi_column",
+      "small_font",
+      "tables"
+    ],
+    "original_format": "synthetic",
+    "page_number": 2,
+    "synthetic": true,
+    "synthetic_transform": "downscale 35% + upscale",
+    "derived_from": "gov_form_itr2.png"
+  },
+  {
+    "filename": "gov_form_shadow_m_itr2.png",
+    "source_url": "https://www.incometax.gov.in/iec/foportal/sites/default/files/2023-04/ITR2_Notified%20Form%20AY%202023-24.pdf",
+    "source_organization": "Income Tax Department, Government of India",
+    "document_type": "Income Tax Return Form ITR-2 AY 2023-24 (page 2)",
+    "language": "English",
+    "characteristics": [
+      "dense_text",
+      "multi_column",
+      "small_font",
+      "tables"
+    ],
+    "original_format": "synthetic",
+    "page_number": 2,
+    "synthetic": true,
+    "synthetic_transform": "corner_shadow gradient",
+    "derived_from": "gov_form_itr2.png"
+  }
+]

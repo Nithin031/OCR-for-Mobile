@@ -1,0 +1,169 @@
+{
+  "image": "Adhaar Update.jpg",
+  "original_size_hw": [
+    1024,
+    768
+  ],
+  "det_limit_type": "max",
+  "det_limit_side_len": 960,
+  "detection": {
+    "input_name": "x",
+    "input_shape": [
+      1,
+      3,
+      960,
+      704
+    ],
+    "input_dtype": "float32",
+    "resize_ratio_hw": [
+      0.9375,
+      0.9166666666666666
+    ],
+    "input_stats_per_channel": [
+      {
+        "min": -1.9809058904647827,
+        "max": 2.248908281326294,
+        "mean": 1.7880341183695816,
+        "std": 0.8790408817254305
+      },
+      {
+        "min": -1.8956583738327026,
+        "max": 2.4285714626312256,
+        "mean": 1.9647037712576672,
+        "std": 0.9397126687251033
+      },
+      {
+        "min": -1.7521568536758423,
+        "max": 2.6399998664855957,
+        "mean": 2.265765230582981,
+        "std": 0.8182401158409023
+      }
+    ],
+    "prob_map_shape": [
+      1,
+      1,
+      960,
+      704
+    ],
+    "prob_map_stats": {
+      "min": 0.0,
+      "max": 0.9998838901519775,
+      "mean": 0.06294974972186151,
+      "std": 0.23440939886940687
+    },
+    "prob_map_frac_above_thresh": 0.0678326231060606,
+    "thresh_used": 0.2,
+    "boxes_after_postprocess": 71
+  },
+  "recognition": {
+    "note": "rec batch size forced to 1 for this pass so each call is one text line; calls are in PaddleX order (sorted by crop aspect ratio)",
+    "total_calls": 71,
+    "first_5": [
+      {
+        "input_name": "x",
+        "input_shape": [
+          1,
+          3,
+          48,
+          320
+        ],
+        "input_stats": {
+          "min": -0.4901960492134094,
+          "max": 1.0,
+          "mean": 0.07616489882348106,
+          "std": 0.2554505176256845
+        },
+        "output_shape": [
+          1,
+          40,
+          18710
+        ]
+      },
+      {
+        "input_name": "x",
+        "input_shape": [
+          1,
+          3,
+          48,
+          320
+        ],
+        "input_stats": {
+          "min": -0.5843137502670288,
+          "max": 1.0,
+          "mean": 0.09652488693051661,
+          "std": 0.2819870664069855
+        },
+        "output_shape": [
+          1,
+          40,
+          18710
+        ]
+      },
+      {
+        "input_name": "x",
+        "input_shape": [
+          1,
+          3,
+          48,
+          320
+        ],
+        "input_stats": {
+          "min": -0.7568627595901489,
+          "max": 1.0,
+          "mean": 0.10210784617035339,
+          "std": 0.29241020061048245
+        },
+        "output_shape": [
+          1,
+          40,
+          18710
+        ]
+      },
+      {
+        "input_name": "x",
+        "input_shape": [
+          1,
+          3,
+          48,
+          320
+        ],
+        "input_stats": {
+          "min": -0.6784313917160034,
+          "max": 1.0,
+          "mean": 0.20592337891640555,
+          "std": 0.37204354084916685
+        },
+        "output_shape": [
+          1,
+          40,
+          18710
+        ]
+      },
+      {
+        "input_name": "x",
+        "input_shape": [
+          1,
+          3,
+          48,
+          320
+        ],
+        "input_stats": {
+          "min": -0.772549033164978,
+          "max": 1.0,
+          "mean": 0.07907203527995282,
+          "std": 0.3752987088351841
+        },
+        "output_shape": [
+          1,
+          40,
+          18710
+        ]
+      }
+    ],
+    "class_dim_check": {
+      "runtime_output_last_dim": 18710,
+      "expected_from_dict": 18710,
+      "passed": true
+    }
+  }
+}

@@ -1,0 +1,97 @@
+{
+  "generated_at": "2026-09-26T12:45:48+00:00",
+  "images": [
+    "Adhaar Update.jpg",
+    "EPFO.jpg",
+    "gov_form_aadhaar_form1.png",
+    "gov_form_angle_m_itr1.png",
+    "gov_form_angle_m_itr2.png",
+    "gov_form_angle_r4_p00.png",
+    "gov_form_angle_r4_p02.png",
+    "gov_form_blur_m_itr1.png",
+    "gov_form_blur_m_itr2.png",
+    "gov_form_blur_r4_p00.png",
+    "gov_form_blur_r4_p02.png",
+    "gov_form_irs1040.png",
+    "gov_form_irs_scheda.png",
+    "gov_form_irs_schedc.png",
+    "gov_form_irs_ss4.png",
+    "gov_form_irs_w4.png",
+    "gov_form_itr1.png",
+    "gov_form_itr2.png",
+    "gov_form_itr4_p00.png",
+    "gov_form_itr4_p02.png",
+    "gov_form_lowres_m_itr1.png",
+    "gov_form_lowres_m_itr2.png",
+    "gov_form_lowres_r4_p00.png",
+    "gov_form_lowres_r4_p02.png",
+    "gov_form_shadow_m_itr1.png",
+    "gov_form_shadow_m_itr2.png",
+    "gov_form_shadow_r4_p00.png",
+    "gov_form_shadow_r4_p02.png",
+    "gov_form_voter6.png",
+    "gov_passport_booklet_p01.png",
+    "gov_passport_booklet_p04.png",
+    "Parivahan.jpg"
+  ],
+  "settings": {
+    "max960": {
+      "limit_type": "max",
+      "limit_side_len": 960,
+      "onnx": "max960/onnx/",
+      "paddle": "max960/paddle/",
+      "crosscheck_overall_matched_cer": 0.00030016043057496246
+    },
+    "max1280": {
+      "limit_type": "max",
+      "limit_side_len": 1280,
+      "onnx": "max1280/onnx/",
+      "paddle": "max1280/paddle/",
+      "crosscheck_overall_matched_cer": 0.0
+    }
+  },
+  "versions": {
+    "python": "3.12.10",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "paddleocr": "3.7.0",
+    "paddlex": "3.7.2",
+    "paddlepaddle": "3.3.1",
+    "onnxruntime": "1.30.0",
+    "onnx": "1.23.0",
+    "numpy": "2.3.5",
+    "opencv-contrib-python": "4.10.0.84"
+  },
+  "models": {
+    "det": {
+      "origin": {
+        "type": "huggingface",
+        "repo_id": "PaddlePaddle/PP-OCRv6_small_det_onnx",
+        "revision": "28fe5895c24fd108c19eb3e8479f4ab385fbfc62"
+      },
+      "inference.onnx_sha256": "d73e0058b7a8086bbd57f3d10b8bcd4ff95363f67e06e2762b5e814fe9c9410e"
+    },
+    "rec": {
+      "origin": {
+        "type": "huggingface",
+        "repo_id": "PaddlePaddle/PP-OCRv6_small_rec_onnx",
+        "revision": "b8f84f0b80c529de40b4fbb3544b84fa7233a513"
+      },
+      "inference.onnx_sha256": "5435fd747c9e0efe15a96d0b378d5bd157e9492ed8fd80edf08f30d02fa24634"
+    }
+  },
+  "pipeline": {
+    "use_doc_orientation_classify": false,
+    "use_doc_unwarping": false,
+    "use_textline_orientation": false,
+    "rec_batch_size": 6,
+    "rec_batch_size_source": "D:\\tools\\reference\\.venv\\Lib\\site-packages\\paddlex\\configs\\pipelines\\OCR.yaml: SubModules.TextRecognition.batch_size",
+    "rec_score_thresh_source": "D:\\tools\\reference\\.venv\\Lib\\site-packages\\paddlex\\configs\\pipelines\\OCR.yaml: SubModules.TextRecognition.score_thresh",
+    "det_thresholds_source": {
+      "db_thresh": "det/inference.yml: PostProcess.thresh",
+      "db_box_thresh": "det/inference.yml: PostProcess.box_thresh",
+      "db_unclip_ratio": "det/inference.yml: PostProcess.unclip_ratio"
+    },
+    "image_decode": "cv2.imread(IMREAD_COLOR) -> BGR, EXIF orientation applied"
+  },
+  "intermediates": "max960/intermediates/Adhaar Update.json"
+}
