@@ -26,6 +26,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.exifinterface)
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.mlkit.text.recognition)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.junit.ext)
