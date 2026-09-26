@@ -1,0 +1,8 @@
+# Model weights are downloaded by fetch_models.py; their sha256 is recorded in
+# models/manifest.json, which IS committed together with the configs.
+models/**/*.onnx
+models/**/.cache/
+# Raw tensors from --save-tensors (large, regenerate on demand)
+golden/**/*.npz
+__pycache__/
+.venv/
