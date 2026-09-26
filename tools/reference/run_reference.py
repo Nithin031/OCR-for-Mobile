@@ -40,6 +40,15 @@ import sys
 from importlib import metadata
 from pathlib import Path
 
+# PaddlePaddle 3.3.1 on Windows: the new PIR executor combined with oneDNN/MKLDNN
+# triggers "ConvertPirAttribute2RuntimeAttribute not support
+# [pir::ArrayAttribute<pir::DoubleAttribute>]" at runtime.
+# PADDLE_PDX_ENABLE_MKLDNN_BYDEFAULT=0 keeps the default run_mode as "paddle"
+# (which calls config.disable_mkldnn()) instead of "mkldnn" (which enables it).
+# setdefault() means a user-set "1" still takes precedence.
+if sys.platform == "win32":
+    os.environ.setdefault("PADDLE_PDX_ENABLE_MKLDNN_BYDEFAULT", "0")
+
 import numpy as np
 
 from refcommon import (
