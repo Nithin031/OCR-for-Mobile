@@ -1,0 +1,5 @@
+# This directory is populated by the Gradle 'copyModels' task at build time.
+# Do not commit the generated files — run `./gradlew :ocr-core:copyModels` to
+# regenerate, or just build the project (copyModels runs before preBuild).
+*
+!.gitignore

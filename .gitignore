@@ -1,0 +1,20 @@
+# Android / Gradle
+.gradle/
+local.properties
+*.iml
+.idea/
+*.hprof
+
+# Build outputs
+app/build/
+ocr-core/build/
+build/
+
+# Gradle wrapper — the jar is committed, scripts are committed, distributions are not
+gradle/wrapper/dists/
+
+# Generated assets are ignored via ocr-core/src/main/assets/.gitignore
+
+# Android keystore
+*.jks
+*.keystore

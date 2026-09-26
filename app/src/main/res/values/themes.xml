@@ -1,0 +1,4 @@
+<resources>
+    <!-- Base theme; Compose sets its own content theme on top of this. -->
+    <style name="Theme.OcrMobile" parent="Theme.Material3.DayNight.NoActionBar" />
+</resources>
