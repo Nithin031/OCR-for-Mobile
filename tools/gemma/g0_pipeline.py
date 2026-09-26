@@ -461,15 +461,15 @@ def step_golden(c: Ctx) -> None:
     cfg = PromptConfig.from_config_file(CONFIG_FILE)
     tasks = resolve_tasks(TASKS_FILE, REPO_ROOT, cfg, quick_actions_from_config(CONFIG_FILE))
     import_gguf(c.llama_dir)
-    gq = GgufFile(c.our_q4)
-    bos_id = gq.field("tokenizer.ggml.bos_token_id")
-    bos_text = gq.field("tokenizer.ggml.tokens")[bos_id]
+    vocab_tokens = GgufFile(c.our_q4).field("tokenizer.ggml.tokens")
     max_new = config_value(c.config, "generation", "max_new_tokens")
 
     log(f"building {len(tasks)} prompts (token counts from the model tokenizer)")
     prompts = []
     with c.runner(c.our_q4, "golden_vocab.log", vocab_only=True) as rv:
         template = rv.ready["chat_template"]
+        # the BOS llama.cpp actually prepends (llama_vocab_bos), not a metadata key that may be absent
+        bos_text = vocab_tokens[rv.ready["bos_token"]]
         for t in tasks:
             built = build_prompt(t.lines, t.question, cfg, rv.count_tokens)
             rendered = rv.render(built.messages)

@@ -128,10 +128,54 @@ class _WinPeak:
         return self.peak or None
 
 
-def _wait_posix(proc: subprocess.Popen) -> int | None:
-    _, status, ru = os.wait4(proc.pid, 0)
-    proc.returncode = os.waitstatus_to_exitcode(status)
-    return ru.ru_maxrss * (1 if sys.platform == "darwin" else 1024)
+class _PosixPeak:
+    """Tracks a child's peak resident memory on Linux/macOS by polling while it runs.
+
+    Not ru_maxrss: on Linux the kernel carries the forking parent's RSS across exec into the child's
+    ru_maxrss, so a small tool launched from a large Python process would report the parent's size.
+    Linux: VmHWM of the child's own address space. macOS: max of psutil RSS samples.
+    """
+
+    def __init__(self, proc: subprocess.Popen):
+        self._pid = proc.pid
+        self.peak = 0
+        self._stop = threading.Event()
+        self._psutil_proc = None
+        if sys.platform != "linux":
+            try:
+                import psutil  # noqa: PLC0415
+                self._psutil_proc = psutil.Process(self._pid)
+            except Exception:  # noqa: BLE001 - no psutil or process already gone
+                self._psutil_proc = None
+        self._thread = threading.Thread(target=self._poll, daemon=True)
+        self._thread.start()
+
+    def _query(self) -> None:
+        try:
+            if sys.platform == "linux":
+                with open(f"/proc/{self._pid}/status", "rb") as f:
+                    for line in f:
+                        if line.startswith(b"VmHWM:"):
+                            self.peak = max(self.peak, int(line.split()[1]) * 1024)
+                            break
+            elif self._psutil_proc is not None:
+                self.peak = max(self.peak, int(self._psutil_proc.memory_info().rss))
+        except (OSError, ValueError, Exception):  # noqa: BLE001 - process exiting
+            pass
+
+    def _poll(self) -> None:
+        self._query()
+        while not self._stop.wait(0.1):
+            self._query()
+
+    def finish(self) -> int | None:
+        self._stop.set()
+        self._thread.join()
+        return self.peak or None
+
+
+def _peak_tracker(proc: subprocess.Popen):
+    return _WinPeak(proc) if IS_WINDOWS else _PosixPeak(proc)
 
 
 class Measured(NamedTuple):
@@ -143,8 +187,8 @@ class Measured(NamedTuple):
 def run_measured(cmd: list, log_path: Path, cwd: Path | None = None, env: dict | None = None) -> Measured:
     """Runs cmd with stdout+stderr appended to log_path; returns exit code, peak resident memory, wall time.
 
-    Peak memory: Linux/macOS ru_maxrss of this child (wait4); Windows PeakWorkingSetSize. Pages of
-    memory-mapped model files that are resident count on both.
+    Peak memory of the child's own process: Windows PeakWorkingSetSize, Linux VmHWM, macOS sampled RSS.
+    Resident pages of memory-mapped model files count on all three.
     """
     log_path = Path(log_path)
     log_path.parent.mkdir(parents=True, exist_ok=True)
@@ -154,12 +198,9 @@ def run_measured(cmd: list, log_path: Path, cwd: Path | None = None, env: dict |
         log.flush()
         t0 = time.monotonic()
         proc = subprocess.Popen(cmd, stdout=log, stderr=subprocess.STDOUT, cwd=cwd, env=env)
-        if IS_WINDOWS:
-            tracker = _WinPeak(proc)
-            proc.wait()
-            peak = tracker.finish()
-        else:
-            peak = _wait_posix(proc)
+        tracker = _peak_tracker(proc)
+        proc.wait()
+        peak = tracker.finish()
         return Measured(proc.returncode, peak, time.monotonic() - t0)
 
 
@@ -191,12 +232,16 @@ class Runner:
         self.log_path = stderr_log
         self._t0 = time.monotonic()
         self.proc = subprocess.Popen(args, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=self._log)
-        self._win = _WinPeak(self.proc) if IS_WINDOWS else None
-        self.ready = self._read()
+        self._peak = _peak_tracker(self.proc)
+        self.peak_rss_bytes: int | None = None
+        try:
+            self.ready = self._read()
+        except RunnerError:
+            self.close()
+            raise
         if not self.ready.get("ok"):
             self.close()
             raise RunnerError(f"runner failed to start: {self.ready.get('error')} (log: {stderr_log})")
-        self.peak_rss_bytes: int | None = None
 
     def _read(self) -> dict:
         line = self.proc.stdout.readline()
@@ -234,11 +279,8 @@ class Runner:
                 pass
         if self.proc.stdin and not self.proc.stdin.closed:
             self.proc.stdin.close()
-        if IS_WINDOWS:
-            self.proc.wait()
-            self.peak_rss_bytes = self._win.finish()
-        elif self.proc.returncode is None:
-            self.peak_rss_bytes = _wait_posix(self.proc)
+        self.proc.wait()
+        self.peak_rss_bytes = self._peak.finish()
         if self.proc.stdout:
             self.proc.stdout.close()
         self._log.close()
