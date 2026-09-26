@@ -1,0 +1,189 @@
+{
+  "_note": "Runtime settings for the on-device Gemma assistant (llm-core) and the G0 desktop runs. Every value has a 'source'. The chat template and special tokens are NOT here: they are read from the GGUF metadata (tokenizer.chat_template) and applied with llama.cpp's llama_chat_apply_template. Placeholders in templates are {name} and are filled by literal replacement on the template only; inserted text is never re-scanned.",
+  "config_version": 1,
+  "llama_cpp": {
+    "value": {"tag": "b11201", "commit": "2145525a4081d66ff1a87cf43ef809f95a85ac0c"},
+    "source": "tools/gemma/llama_cpp_pin.json; spec rule 4: same tag for desktop quantization and the Android build"
+  },
+  "model": {
+    "file_name": {
+      "value": "gemma-3-4b-it-qat-q4_0.gguf",
+      "source": "spec G0 step 6"
+    },
+    "quant_type": {
+      "value": "Q4_0",
+      "source": "spec rule 6 and G0 step 4. Produced with llama-quantize --pure (all quantizable weights Q4_0, no K-quant mixture, no imatrix)"
+    },
+    "manifest_file": {
+      "value": "gemma_manifest.json",
+      "source": "spec G0 step 6; G1 bundles it as an asset and checks the imported file's SHA-256 and byte size against it"
+    },
+    "device_dir": {
+      "value": "models/gemma",
+      "source": "spec G1 step 2: filesDir/models/gemma/"
+    }
+  },
+  "runtime": {
+    "n_ctx": {
+      "value": 4096,
+      "source": "spec G0 step 6 default"
+    },
+    "n_batch": {
+      "value": 2048,
+      "source": "llama.cpp b11201 llama_context_default_params() (src/llama-context.cpp). Prompt is decoded in chunks of this size"
+    },
+    "n_ubatch": {
+      "value": 512,
+      "source": "llama.cpp b11201 llama_context_default_params()"
+    },
+    "n_threads": {
+      "value": "auto_big_cores",
+      "source": "spec G0 step 6: number of big cores, tuned in G1. Desktop G0 runs use the physical core count and record it"
+    },
+    "n_threads_batch": {
+      "value": "auto_big_cores",
+      "source": "same as n_threads"
+    },
+    "flash_attn": {
+      "value": "disabled",
+      "source": "set explicitly. b11201 default is 'auto', which is resolved per backend; fixing it keeps desktop and phone on the same attention path"
+    },
+    "kv_cache_type": {
+      "value": "f16",
+      "source": "spec G1 step 4 (KV cache F16); also the b11201 default for type_k/type_v"
+    },
+    "swa_full": {
+      "value": true,
+      "source": "llama.cpp b11201 C-API default (llama_context_default_params). false would shrink the sliding-window layers' KV cache; that is a memory optimization and needs approval (spec rule 6)"
+    },
+    "load_mode": {
+      "value": "mmap",
+      "source": "spec G1 step 4 (load with mmap); b11201 LLAMA_LOAD_MODE_MMAP"
+    },
+    "n_gpu_layers": {
+      "value": 0,
+      "source": "spec: CPU only, no GPU/NPU offload"
+    },
+    "use_extra_bufts": {
+      "value": true,
+      "source": "llama.cpp b11201 default: the CPU backend may repack Q4_0 weights into an interleaved layout for its own kernels at load time. Same weights and format; recorded because ARM and x86 kernels then differ numerically (expected by spec G1 step 7)"
+    }
+  },
+  "sampling": {
+    "sampler": {
+      "value": "greedy",
+      "source": "spec G0 step 5 and G1 step 6 (greedy decoding); llama_sampler_init_greedy"
+    },
+    "stop": {
+      "value": "end-of-generation tokens from the GGUF vocab (llama_vocab_is_eog), or max_new_tokens",
+      "source": "llama.cpp b11201 examples/simple/simple.cpp loop"
+    }
+  },
+  "generation": {
+    "max_new_tokens": {
+      "value": 512,
+      "source": "PROPOSED in G0 (not in spec): room for a structured summary of a one-page form; caps worst-case decode time at about 100 s at the G1 floor of 5 tokens/s. Also reserves this many tokens of n_ctx for the answer"
+    }
+  },
+  "prompt": {
+    "version": {
+      "value": "1",
+      "source": "G0 v1. Bump when any prompt text below changes; golden_llm outputs record the version they were made with"
+    },
+    "system_text": {
+      "value": "You help a person understand a document. The document text was read by OCR (optical character recognition) and is given below as numbered lines [L1], [L2], ... in reading order. OCR can misread characters. Lines marked (low confidence) are the most likely to contain errors.\n\nFollow these rules:\n1. Take facts about this document only from its lines. Do not add facts from memory.\n2. After every fact you take from the document, cite the line it comes from, like [L12]. If it comes from several lines, cite each one, like [L3][L4].\n3. If the answer is not in the lines, say that the document does not say. Do not guess.\n4. Never guess, correct, complete or reformat names, ID numbers, dates or amounts. Copy them exactly as they appear in the line, even if they look wrong. If the line is marked (low confidence), say that the value may be misread.\n5. You may add general guidance about what a field or term usually means. Put it in a separate sentence that starts with \"General guidance:\" so it is clear that it does not come from the document.\n6. Answer in English. Keep the answer short.",
+      "source": "spec Phase 7a instructions (answer only from the lines, cite [Lnn] for every fact, say when the answer is not there, never guess or correct names/IDs/dates/amounts, mark general guidance). Wording proposed in G0 v1"
+    },
+    "system_role_handling": {
+      "value": "messages are [system, user]; Gemma 3 has no system role",
+      "source": "llama.cpp b11201 src/llama-chat.cpp, LLM_CHAT_TEMPLATE_GEMMA (selected because the GGUF template contains '<start_of_turn>'): the system text is trimmed and written at the start of the first user turn, followed by a blank line ('\\n\\n'). The G0 pipeline also renders every golden prompt with the GGUF's own Jinja template and checks the token ids are identical"
+    },
+    "line_template": {
+      "value": "[L{n}] {text}",
+      "source": "spec Phase 7a: number the lines in reading order as [L1] ... [Ln]"
+    },
+    "low_confidence_threshold": {
+      "value": 0.8,
+      "source": "spec Phase 7a (confidence < 0.80); same threshold as the Phase 3 highlight"
+    },
+    "low_confidence_suffix": {
+      "value": " (low confidence)",
+      "source": "spec Phase 7a. Appended when confidence < threshold. Lines with no confidence (null) are not marked, because there is nothing to compare"
+    },
+    "line_text_normalization": {
+      "value": "CR/LF inside a line become a space; leading/trailing whitespace is trimmed; nothing else changes",
+      "source": "G0 v1: keeps every line on one prompt line without altering the OCR text"
+    },
+    "skip_blank_lines": {
+      "value": true,
+      "source": "G0 v1: OCR lines whose text is empty after normalization are not numbered. The builder returns a map from each [Ln] to the OCR line index so citations still point at the right box (spec 7c)"
+    },
+    "user_template": {
+      "value": "Document lines:\n{lines}{truncation_note}\n\nQuestion: {question}",
+      "source": "G0 v1"
+    },
+    "line_separator": {
+      "value": "\n",
+      "source": "G0 v1"
+    },
+    "truncation_note_template": {
+      "value": "\n(Note: the last {omitted} lines of the document were left out because the document is too long.)",
+      "source": "spec Phase 7a: truncate in reading order and tell the user how many lines were left out. Only added when lines were left out"
+    },
+    "empty_document_text": {
+      "value": "(No text was recognized in this document.)",
+      "source": "G0 v1; used as {lines} when the OCR result has no non-blank lines"
+    },
+    "token_budget": {
+      "value": "prompt_tokens <= n_ctx - max_new_tokens, counted on the full templated prompt (BOS included) with the model tokenizer",
+      "source": "spec Phase 7a"
+    },
+    "truncation_search": {
+      "value": "keep the largest k (first k lines in reading order) whose full prompt fits; binary search: lo=0, hi=n-1; while lo<hi: mid=(lo+hi+1)//2; fits(mid) ? lo=mid : hi=mid-1. Error if k=0 does not fit",
+      "source": "G0 v1; written out so the Kotlin port (7a) picks exactly the same k"
+    },
+    "quick_actions": {
+      "value": {
+        "explain": "Explain this document.",
+        "asks_for": "What does this form ask for?"
+      },
+      "source": "spec Phase 7c quick actions; the text sent to the model is the button text"
+    }
+  },
+  "ram": {
+    "min_total_bytes": {
+      "value": 6000000000,
+      "source": "spec G1 step 3 default (total >= 6 GB), read as 6 x 10^9 bytes. OPEN QUESTION: Android reports less than the marketed size (kernel/carve-outs), so many '6 GB' phones report about 5.5-5.9 x 10^9 and would fail this gate"
+    },
+    "min_available_bytes": {
+      "value": null,
+      "source": "not in spec; null = no available-memory gate. OPEN QUESTION: set a value after G1 measures available memory and peak PSS"
+    }
+  },
+  "feasibility": {
+    "load_s_max": {
+      "value": 15,
+      "source": "spec G1 step 8"
+    },
+    "ttft_s_max": {
+      "value": 10,
+      "source": "spec G1 step 8 (for a ~1,000-token prompt)"
+    },
+    "ttft_prompt_tokens": {
+      "value": 1000,
+      "source": "spec G1 step 8"
+    },
+    "decode_tokens_per_s_min": {
+      "value": 5,
+      "source": "spec G1 step 8"
+    },
+    "peak_pss_bytes_max": {
+      "value": 4000000000,
+      "source": "spec G1 step 8 (<= 4 GB), read as 4 x 10^9 bytes"
+    },
+    "consecutive_runs": {
+      "value": 10,
+      "source": "spec G1 step 8 (no crash or OOM kill over 10 consecutive runs, airplane mode)"
+    }
+  }
+}

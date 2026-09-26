@@ -1,0 +1,2 @@
+# Model weights are never committed (spec G0 step 6); their SHA-256 is in gemma_manifest.json.
+*.gguf
