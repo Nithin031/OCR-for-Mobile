@@ -13,6 +13,8 @@ protobuf==4.25.9
 huggingface_hub==0.36.2    # transformers 4.57.6 requires huggingface-hub<1.0
 jinja2==3.1.6              # renders the GGUF chat template to cross-check llama.cpp's built-in Gemma format
 psutil==7.2.2              # physical core count and total RAM for the report
+cmake==4.4.3               # builds llama.cpp; g0_pipeline.py puts this venv's cmake/ninja first on PATH
+ninja==1.13.2              # build tool for non-Visual-Studio compilers (MinGW-w64 GCC, clang)
 tqdm==4.70.1               # gguf-py dependency
 pyyaml==6.0.3              # gguf-py dependency
 requests==2.34.2           # gguf-py dependency

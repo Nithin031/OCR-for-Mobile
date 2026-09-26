@@ -709,7 +709,13 @@ STEP_FUNCS = {"check": step_check, "llama": step_llama, "download": step_downloa
               "inspect": step_inspect, "perplexity": step_perplexity, "golden": step_golden, "report": step_report}
 
 
+def _prefer_venv_tools() -> None:
+    # cmake and ninja from requirements.txt sit next to this interpreter; use them even if the venv is not activated
+    os.environ["PATH"] = str(Path(sys.executable).parent) + os.pathsep + os.environ.get("PATH", "")
+
+
 def main(argv: list[str] | None = None) -> None:
+    _prefer_venv_tools()
     sources = load_json(SOURCES_FILE)
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("steps", nargs="*", default=["all"], help=f"'all' (default) or any of: {' '.join(STEPS)}")

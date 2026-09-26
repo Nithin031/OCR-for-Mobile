@@ -25,10 +25,16 @@ choice is recorded in git) or pass `--source-repo google/gemma-3-4b-it-qat-q4_0-
 * About **30 GB free disk** for `--work-dir` (HF download ~8.6 GB, BF16 GGUF ~7.8 GB, official GGUF ~3.2 GB,
   comparison variant ~3.2 GB, build ~1 GB). Our Q4_0 (~2.2 GB) goes to `tools/reference/gemma/`.
 * **16 GB RAM** recommended: the BF16 runs map a 7.8 GB file.
-* Git, CMake 3.18+, a C++17 compiler, Python 3.10+ (3.12 recommended, 64-bit).
-  * Windows: "Visual Studio 2022 Build Tools" with the "Desktop development with C++" workload (includes
-    CMake), Git for Windows, Python 3.12 from python.org.
-  * Linux: `build-essential cmake git python3-venv`. macOS: Xcode command line tools + `brew install cmake`.
+* Git, Python 3.10+ (3.12 recommended, 64-bit) and a C++17 compiler for the desktop. CMake and Ninja come
+  from `requirements.txt` (the pipeline uses the venv's copies even if the venv is not activated).
+  * Windows, either:
+    * Visual Studio Build Tools with the "Desktop development with C++" workload (default generator), or
+    * MinGW-w64 GCC 11+ (64-bit, `x86_64-w64-mingw32`, thread model `posix` or `mcf`, e.g. MSYS2 UCRT64)
+      or LLVM-MinGW clang, with these set in the shell before running:
+      `$env:CMAKE_GENERATOR = "Ninja"; $env:CC = "gcc"; $env:CXX = "g++"` (or `clang`/`clang++`).
+    The Android NDK does not count: it builds for phones, not for Windows.
+  * Linux: `build-essential git python3-venv`. macOS: Xcode command line tools.
+  * The offline smoke test (below) proves the toolchain in about 10-20 minutes; run it first.
 * A Hugging Face account that has **accepted the Gemma terms** on these pages (open each one while logged in):
   * https://huggingface.co/google/gemma-3-4b-it-qat-int4-unquantized (or the q4_0 one, see above)
   * https://huggingface.co/google/gemma-3-4b-it-qat-q4_0-gguf
