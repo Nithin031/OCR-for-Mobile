@@ -1,0 +1,14 @@
+{
+  "_note": "Hugging Face sources for G0. Revisions are resolved from 'main' at download time and recorded (commit sha) in tools/reference/gemma/gemma_manifest.json. Pass --source-revision / --official-revision to pin an exact commit.",
+  "source_repo": "google/gemma-3-4b-it-qat-int4-unquantized",
+  "source_repo_note": "As named in the project spec. Google also publishes google/gemma-3-4b-it-qat-q4_0-unquantized, whose QAT targets Q4_0 (GGUF / llama.cpp); the int4 checkpoint targets general int4 schemes. Open decision for the project owner, see tools/gemma/README.md.",
+  "source_allow_patterns": ["*.json", "*.safetensors", "tokenizer.model"],
+  "official_gguf_repo": "google/gemma-3-4b-it-qat-q4_0-gguf",
+  "official_gguf_file": "gemma-3-4b-it-q4_0.gguf",
+  "official_gguf_file_note": "Text model only. The repo also holds the vision projector (mmproj); it is out of scope and never downloaded. If this filename is not in the repo, the pipeline stops and lists the repo's .gguf files.",
+  "perplexity_text": {
+    "url": "https://huggingface.co/datasets/ggml-org/ci/resolve/main/wikitext-2-raw-v1.zip",
+    "member": "wikitext-2-raw/wiki.test.raw",
+    "source": "llama.cpp b11201 scripts/get-wikitext-2.sh (the standard llama.cpp perplexity text)"
+  }
+}

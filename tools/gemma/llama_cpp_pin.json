@@ -1,0 +1,8 @@
+{
+  "_note": "Single source of truth for the llama.cpp version. G0 (desktop quantization, perplexity, golden runs) and G1 (Android llm-core build) must both use exactly this tag and commit.",
+  "repo": "https://github.com/ggml-org/llama.cpp",
+  "tag": "b11201",
+  "commit": "2145525a4081d66ff1a87cf43ef809f95a85ac0c",
+  "tag_date": "2026-09-26T07:59:15-07:00",
+  "verified": "2026-09-26: git ls-remote --tags (latest b-tag at the time), shallow clone at the tag, commit read with git log"
+}
