@@ -39,29 +39,70 @@ disappear, and then we would have to re-verify it.
 
 ## Commands
 
-Python 3.11 on Linux or macOS, CPU only. Run from the repo root:
+Python 3.11+ (3.12 confirmed working on Windows). CPU only. Run from `tools/reference/`:
 
+**Linux / macOS (bash):**
 ```bash
-cd tools/reference
 python3.11 -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.lock.txt      # or: pip install -r requirements.txt
+pip install -r requirements.lock.txt
+
+python fetch_models.py
+# add form images to samples/  (FAKE data only - see Privacy below)
+python run_reference.py --save-tensors
+```
+
+**Windows (PowerShell):**
+```powershell
+py -3.12 -m venv .venv          # Python 3.11 also works if installed
+# activate (optional; or use .venv\Scripts\python.exe directly):
+.\.venv\Scripts\Activate.ps1    # may need: Set-ExecutionPolicy -Scope Process Bypass
+.\.venv\Scripts\python.exe -m pip install -r requirements.lock.txt
 
 # 1) Models, dictionary, configs, model I/O (needs internet: huggingface.co or bcebos.com)
-python fetch_models.py                     # --source hf|bos|auto, --hf-revision <sha> to pin
+.\.venv\Scripts\python.exe fetch_models.py   # --source hf|bos|auto, --hf-revision <sha>
 
 # 2) Put 10-20 form images in samples/  (FAKE data only - see Privacy below)
 
 # 3) Golden outputs (needs internet the first time: the native-Paddle
 #    cross-check downloads the non-ONNX PP-OCRv6 small models by name)
-python run_reference.py --save-tensors
+.\.venv\Scripts\python.exe run_reference.py --save-tensors
 
 # Useful variants
-python run_reference.py --skip-paddle                          # ONNX goldens only
-python run_reference.py --det-resize max:960 --det-resize min:64
-python run_reference.py --intermediates-image my_form.jpg
-python fetch_models.py --skip-download                         # re-inspect existing models
+.\.venv\Scripts\python.exe run_reference.py --skip-paddle
+.\.venv\Scripts\python.exe run_reference.py --det-resize max:960 --det-resize min:64
+.\.venv\Scripts\python.exe run_reference.py --intermediates-image my_form.jpg
+.\.venv\Scripts\python.exe fetch_models.py --skip-download   # re-inspect existing models
 ```
+
+## Building android_assets/
+
+`android_assets/models/` contains the five files the Android engine reads at
+runtime. The `.onnx` files are git-ignored (large binaries; shas are in
+`manifest.json`). Run after `fetch_models.py`:
+
+```powershell
+.\.venv\Scripts\python.exe build_android_assets.py
+```
+
+This copies `models/det/inference.onnx`, `models/rec/inference.onnx`,
+`models/rec/ppocr_keys.txt`, `models/preprocess_config.json`, and
+`models/model_io.json` into `android_assets/models/`, verifies the SHA-256 of
+each file against `models/manifest.json`, checks that `ppocr_keys.txt` has
+exactly 18708 lines, and writes `android_assets/models/manifest.json`.
+
+```
+android_assets/models/
+  det/inference.onnx            (9.9 MB, git-ignored)
+  rec/inference.onnx            (21.2 MB, git-ignored)
+  rec/ppocr_keys.txt            18708-line dictionary
+  preprocess_config.json        every preprocessing value with its source
+  model_io.json                 ONNX input/output names, shapes, dtypes
+  manifest.json                 SHA-256 of each file above
+```
+
+The Android engine must read preprocessing values from `preprocess_config.json`
+at runtime — do **not** hardcode mean/std/thresh/rec-shape in the app.
 
 ## What gets written
 
@@ -183,6 +224,20 @@ anywhere. The only network calls are the model downloads.
 
 ## Status of this phase
 
-The scripts were checked for import, argument and plumbing correctness against
-the pinned packages. The real models and a real golden run have **not** been
-produced yet (see the Phase 0 summary in the PR/commit message for why).
+**Phase 0 complete (2026-09-26).**
+
+Real PP-OCRv6 small ONNX models downloaded from HuggingFace (det: 9.88 MB,
+rec: 21.16 MB; shas in `models/manifest.json`). Golden outputs produced for
+32 sample images × 2 resize settings (max:960, max:1280).
+
+ONNX vs native-Paddle cross-check CER:
+
+| Setting | Overall CER | Notes |
+|---|---|---|
+| max:960 | 0.0300 % | 31/32 images 0.0000 %; one lowres variant had 1 extra ONNX box |
+| max:1280 | 0.0000 % | exact match on every image |
+
+Windows-specific fix: `run_reference.py` sets
+`PADDLE_PDX_ENABLE_MKLDNN_BYDEFAULT=0` before any PaddleX import on `win32`,
+to avoid the PaddlePaddle 3.3.1 PIR+oneDNN crash
+(`ConvertPirAttribute2RuntimeAttribute not support pir::ArrayAttribute<pir::DoubleAttribute>`).
