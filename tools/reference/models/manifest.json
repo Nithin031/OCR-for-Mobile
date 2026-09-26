@@ -1,0 +1,75 @@
+{
+  "det": {
+    "origin": {
+      "type": "huggingface",
+      "repo_id": "PaddlePaddle/PP-OCRv6_small_det_onnx",
+      "revision": "28fe5895c24fd108c19eb3e8479f4ab385fbfc62"
+    },
+    "files": {
+      ".gitattributes": {
+        "sha256": "11ad7efa24975ee4b0c3c3a38ed18737f0658a5f75a0a96787b576a78a023361",
+        "bytes": 1519
+      },
+      "inference.json": {
+        "sha256": "89240f689a4a77aad75ef55a8df0a15c8e1d4980a327d17e58f24bbadde5aeab",
+        "bytes": 229307
+      },
+      "inference.onnx": {
+        "sha256": "d73e0058b7a8086bbd57f3d10b8bcd4ff95363f67e06e2762b5e814fe9c9410e",
+        "bytes": 9880512
+      },
+      "inference.yml": {
+        "sha256": "193f435274bf9f0b5f71a929bbfbcf148282df7e633b34e7c373e8f44741b516",
+        "bytes": 885
+      },
+      "README.md": {
+        "sha256": "e9403667f0f92055d8ce9e73a2beb1002fc489d9342697db74039eb7178bb5fb",
+        "bytes": 16076
+      }
+    },
+    "official_source": {
+      "hf_repo": "PaddlePaddle/PP-OCRv6_small_det_onnx",
+      "bos_url": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0.0/PP-OCRv6_small_det_onnx_infer.tar",
+      "expected_model_name": "PP-OCRv6_small_det"
+    }
+  },
+  "rec": {
+    "origin": {
+      "type": "huggingface",
+      "repo_id": "PaddlePaddle/PP-OCRv6_small_rec_onnx",
+      "revision": "b8f84f0b80c529de40b4fbb3544b84fa7233a513"
+    },
+    "files": {
+      ".gitattributes": {
+        "sha256": "11ad7efa24975ee4b0c3c3a38ed18737f0658a5f75a0a96787b576a78a023361",
+        "bytes": 1519
+      },
+      "inference.json": {
+        "sha256": "f0bf53c853937a917affdd74467472167727f8ab0f0f7bded01c4a16c27e46e6",
+        "bytes": 208004
+      },
+      "inference.onnx": {
+        "sha256": "5435fd747c9e0efe15a96d0b378d5bd157e9492ed8fd80edf08f30d02fa24634",
+        "bytes": 21159378
+      },
+      "inference.yml": {
+        "sha256": "ab078671bb49f06228eadccd34f1bb501e157f7a047095ffb943ba81512c77d1",
+        "bytes": 150579
+      },
+      "README.md": {
+        "sha256": "7d46dbd183ac09bd5a2e6b4577dcb29240751b1c00eb6813eca308d529f86806",
+        "bytes": 16585
+      },
+      "ppocr_keys.txt": {
+        "sha256": "b5f2bfe2bdd9448429e3e82b51c789775d9b42f2403d082b00662eb77e401c5d",
+        "bytes": 74947,
+        "derived_from": "rec/inference.yml PostProcess.character_dict"
+      }
+    },
+    "official_source": {
+      "hf_repo": "PaddlePaddle/PP-OCRv6_small_rec_onnx",
+      "bos_url": "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0.0/PP-OCRv6_small_rec_onnx_infer.tar",
+      "expected_model_name": "PP-OCRv6_small_rec"
+    }
+  }
+}
