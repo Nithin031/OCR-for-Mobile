@@ -1,0 +1,11 @@
+# Phase 0 reference tools. Versions verified on PyPI on 2026-09-26.
+# PP-OCRv6_small_det / PP-OCRv6_small_rec are registered in paddlex 3.7.x
+# (paddlex/inference/utils/official_models.py).
+paddleocr==3.7.0
+paddlex==3.7.2
+paddlepaddle==3.3.1        # CPU build; needed for the native-Paddle cross-check
+onnxruntime==1.30.0
+onnx==1.23.0
+huggingface_hub>=1.0       # model download (also a paddlex dependency)
+PyYAML>=6
+requests
