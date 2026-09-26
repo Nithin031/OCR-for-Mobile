@@ -19,7 +19,11 @@
 
 #include <nlohmann/json.hpp>
 
+#include <algorithm>
+#include <climits>
+#include <cstdint>
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <iostream>
 #include <stdexcept>
