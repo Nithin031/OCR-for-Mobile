@@ -2,6 +2,8 @@
 # models/manifest.json, which IS committed together with the configs.
 models/**/*.onnx
 models/**/.cache/
+# Android assets: .onnx files are large; regenerate with build_android_assets.py
+android_assets/**/*.onnx
 # Raw tensors from --save-tensors (large, regenerate on demand)
 golden/**/*.npz
 __pycache__/
