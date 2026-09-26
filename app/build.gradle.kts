@@ -55,6 +55,7 @@ dependencies {
     implementation(libs.compose.material.icons)
 
     implementation(libs.mlkit.document.scanner)
+    implementation(libs.material)
     implementation(libs.mediapipe.tasks.genai)
     implementation(libs.kotlinx.coroutines.android)
 
