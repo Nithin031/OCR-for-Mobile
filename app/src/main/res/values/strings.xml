@@ -48,4 +48,18 @@
     <string name="status_thinking">Thinking… (on this phone, can take up to a minute)</string>
     <string name="kag_loading">Loading scheme knowledge base…</string>
     <string name="kag_ready">%1$d documents · %2$d passages · %3$d schemes in graph</string>
+
+    <!-- Voice (speech to text / text to speech, on-device) -->
+    <string name="voice_input">Ask by voice</string>
+    <string name="listening">Listening… speak your question in %1$s</string>
+    <string name="voice_missing_pack">Offline voice input for %1$s is not installed on this phone yet.</string>
+    <string name="voice_not_offline">Offline voice input is not available for %1$s on this phone. Please type the question.</string>
+    <string name="voice_download">Download it (needs internet once)</string>
+    <string name="voice_downloading">Download started. When it finishes, voice input works offline.</string>
+    <string name="voice_unavailable">Voice input needs on-device speech recognition (Android 12 or newer).</string>
+    <string name="voice_no_match">Did not catch that. Tap the microphone and try again.</string>
+    <string name="mic_permission">Allow microphone access to ask by voice.</string>
+    <string name="read_aloud">Read aloud</string>
+    <string name="stop_reading">Stop reading</string>
+    <string name="no_offline_voice">No offline %1$s voice is installed. Add it in Settings → Text-to-speech.</string>
 </resources>

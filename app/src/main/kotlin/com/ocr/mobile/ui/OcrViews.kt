@@ -102,7 +102,7 @@ fun ZoomableDocument(bitmap: Bitmap, ocr: OcrUi) {
 }
 
 @Composable
-fun OcrSection(ocr: OcrUi, onRunMlKit: () -> Unit) {
+fun OcrSection(ocr: OcrUi, onRunMlKit: () -> Unit, readAloud: @Composable (String) -> Unit = {}) {
     Text(stringResource(R.string.recognized_text), style = MaterialTheme.typography.titleMedium)
     if (ocr.engineName.isNotEmpty()) {
         Text(stringResource(R.string.engine_offline, ocr.engineName), style = MaterialTheme.typography.bodySmall)
@@ -124,6 +124,7 @@ fun OcrSection(ocr: OcrUi, onRunMlKit: () -> Unit) {
         ocr.ocrLines.isEmpty() -> Text(stringResource(R.string.no_text_found))
         else -> {
             Text(stringResource(R.string.lines_total, ocr.ocrLines.size, ocr.elapsedMs ?: 0L), style = MaterialTheme.typography.bodySmall)
+            readAloud(ocr.lines.joinToString("\n"))
             if (ocr.pipelineNote.isNotEmpty()) {
                 Text(ocr.pipelineNote, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.secondary)
             }

@@ -48,4 +48,18 @@
     <string name="status_thinking">ಯೋಚಿಸುತ್ತಿದೆ… (ಈ ಫೋನ್‌ನಲ್ಲಿ ಒಂದು ನಿಮಿಷದವರೆಗೆ ತೆಗೆದುಕೊಳ್ಳಬಹುದು)</string>
     <string name="kag_loading">ಯೋಜನೆ ಜ್ಞಾನ ಭಂಡಾರ ಲೋಡ್ ಆಗುತ್ತಿದೆ…</string>
     <string name="kag_ready">%1$d ದಾಖಲೆಗಳು · %2$d ಭಾಗಗಳು · ಗ್ರಾಫ್‌ನಲ್ಲಿ %3$d ಯೋಜನೆಗಳು</string>
+
+    <!-- Voice (speech to text / text to speech, on-device) -->
+    <string name="voice_input">ಧ್ವನಿಯಲ್ಲಿ ಕೇಳಿ</string>
+    <string name="listening">ಆಲಿಸುತ್ತಿದೆ… ನಿಮ್ಮ ಪ್ರಶ್ನೆಯನ್ನು %1$s ನಲ್ಲಿ ಹೇಳಿ</string>
+    <string name="voice_missing_pack">ಈ ಫೋನ್‌ನಲ್ಲಿ %1$s ಗಾಗಿ ಆಫ್‌ಲೈನ್ ಧ್ವನಿ ಗುರುತಿಸುವಿಕೆ ಇನ್ನೂ ಸ್ಥಾಪನೆಯಾಗಿಲ್ಲ.</string>
+    <string name="voice_not_offline">ಈ ಫೋನ್‌ನಲ್ಲಿ %1$s ಗಾಗಿ ಆಫ್‌ಲೈನ್ ಧ್ವನಿ ಗುರುತಿಸುವಿಕೆ ಲಭ್ಯವಿಲ್ಲ. ದಯವಿಟ್ಟು ಪ್ರಶ್ನೆಯನ್ನು ಟೈಪ್ ಮಾಡಿ.</string>
+    <string name="voice_download">ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ (ಒಮ್ಮೆ ಇಂಟರ್ನೆಟ್ ಬೇಕು)</string>
+    <string name="voice_downloading">ಡೌನ್‌ಲೋಡ್ ಪ್ರಾರಂಭವಾಗಿದೆ. ಮುಗಿದ ನಂತರ ಧ್ವನಿ ಪ್ರಶ್ನೆ ಆಫ್‌ಲೈನ್‌ನಲ್ಲಿ ಕೆಲಸ ಮಾಡುತ್ತದೆ.</string>
+    <string name="voice_unavailable">ಧ್ವನಿಯಲ್ಲಿ ಕೇಳಲು ಫೋನ್‌ನಲ್ಲಿ ಧ್ವನಿ ಗುರುತಿಸುವಿಕೆ ಬೇಕು (Android 12 ಅಥವಾ ಹೊಸದು).</string>
+    <string name="voice_no_match">ಸರಿಯಾಗಿ ಕೇಳಿಸಲಿಲ್ಲ. ಮೈಕ್ ಒತ್ತಿ ಮತ್ತೆ ಹೇಳಿ.</string>
+    <string name="mic_permission">ಧ್ವನಿಯಲ್ಲಿ ಕೇಳಲು ಮೈಕ್ರೋಫೋನ್ ಅನುಮತಿ ನೀಡಿ.</string>
+    <string name="read_aloud">ಓದಿ ಹೇಳಿ</string>
+    <string name="stop_reading">ಓದುವುದನ್ನು ನಿಲ್ಲಿಸಿ</string>
+    <string name="no_offline_voice">%1$s ನ ಯಾವುದೇ ಆಫ್‌ಲೈನ್ ಧ್ವನಿ ಸ್ಥಾಪನೆಯಾಗಿಲ್ಲ. ಸೆಟ್ಟಿಂಗ್ಸ್ → ಟೆಕ್ಸ್ಟ್-ಟು-ಸ್ಪೀಚ್‌ನಲ್ಲಿ ಸೇರಿಸಿ.</string>
 </resources>

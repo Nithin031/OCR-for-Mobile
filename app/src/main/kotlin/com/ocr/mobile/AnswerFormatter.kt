@@ -55,6 +55,14 @@ object AnswerFormatter {
         return Formatted(blocks.filter { it.plain.isNotBlank() }, cited.toList())
     }
 
+    /** The answer as plain sentences for read-aloud: no citation numbers, bullets or Markdown. */
+    fun spokenText(answer: String): String =
+        format(answer).blocks.joinToString("\n") { b ->
+            val text = b.runs.filterNot { it.ref }.joinToString("") { it.text }.trim()
+            val withStep = if (b.kind == Kind.NUMBERED) "${b.marker} $text" else text
+            if (withStep.isNotEmpty() && withStep.last() in ".?!:।") withStep else "$withStep."
+        }
+
     /** Inline pass: citations -> [n], **bold** / __bold__ -> bold runs, leftover markup removed. */
     private fun inline(text: String, sourceIds: List<String>, cited: MutableSet<Int>): List<Run> {
         // 1. Citations. Known IDs become numbers; unknown ones (hallucinated) are dropped.

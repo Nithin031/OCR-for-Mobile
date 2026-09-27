@@ -27,6 +27,8 @@ import androidx.compose.material3.TextButton
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import com.ocr.mobile.GemmaEngine
+import com.ocr.mobile.AnswerFormatter
+import com.ocr.mobile.ReadAloud
 import com.ocr.mobile.R
 import androidx.compose.ui.res.stringResource
 import androidx.compose.material3.CircularProgressIndicator
@@ -67,6 +69,7 @@ import com.ocr.mobile.OcrUi
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ResultScreen(bitmap: Bitmap, viewModel: MainViewModel) {
+    val (tts, ttsState) = rememberReadAloud()
     val ocr by viewModel.ocrState.collectAsState()
     val ai by viewModel.aiState.collectAsState()
 
@@ -98,13 +101,15 @@ fun ResultScreen(bitmap: Bitmap, viewModel: MainViewModel) {
                     .padding(vertical = 4.dp),
             )
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-            OcrSection(ocr, onRunMlKit = { viewModel.rerun(EngineRegistry.DEFAULT_ID) })
+            OcrSection(ocr, onRunMlKit = { viewModel.rerun(EngineRegistry.DEFAULT_ID) }) { text ->
+                ReadAloudButton(text, key = "ocr", tts = tts, state = ttsState)
+            }
             if (ocr.fields.isNotEmpty()) {
                 HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
                 FieldsSection(ocr.fields)
             }
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-            AssistantSection(ocr, ai, viewModel)
+            AssistantSection(ocr, ai, viewModel, tts, ttsState)
             Spacer(Modifier.height(24.dp))
         }
     }
@@ -139,11 +144,12 @@ private fun FieldsSection(fields: List<DocField>) {
 private const val MAX_FIELDS_SHOWN = 40
 
 @Composable
-private fun AssistantSection(ocr: OcrUi, ai: AiUi, viewModel: MainViewModel) {
+private fun AssistantSection(ocr: OcrUi, ai: AiUi, viewModel: MainViewModel, tts: ReadAloud, ttsState: ReadAloudState) {
     val picker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) viewModel.importModel(uri)
     }
     var question by remember { mutableStateOf("") }
+    val (voice, voiceState) = rememberVoiceQuestion()
 
     val modelName = ai.activeModel?.let { GemmaEngine.friendlyName(it) } ?: "Gemma"
     Text(stringResource(R.string.ask_ai_title, modelName), style = MaterialTheme.typography.titleMedium)
@@ -196,7 +202,11 @@ private fun AssistantSection(ocr: OcrUi, ai: AiUi, viewModel: MainViewModel) {
                 onValueChange = { question = it },
                 label = { Text(stringResource(R.string.question_hint)) },
                 modifier = Modifier.fillMaxWidth(),
+                trailingIcon = {
+                    VoiceQuestionButton(voice, voiceState, enabled = !ai.busy, onText = { question = it })
+                },
             )
+            VoiceQuestionStatus(voice, voiceState)
             Spacer(Modifier.height(8.dp))
             Button(enabled = canAsk && question.isNotBlank(), onClick = { viewModel.ask(question) }) { Text(stringResource(R.string.ask)) }
         }
@@ -221,6 +231,7 @@ private fun AssistantSection(ocr: OcrUi, ai: AiUi, viewModel: MainViewModel) {
                 Text(stringResource(R.string.question_label, ai.question.orEmpty()), style = MaterialTheme.typography.labelLarge)
                 Spacer(Modifier.height(6.dp))
                 FormattedAnswer(ai.answer, ai.sources)
+                ReadAloudButton(AnswerFormatter.spokenText(ai.answer), key = "answer", tts = tts, state = ttsState)
                 Spacer(Modifier.height(8.dp))
                 Text(
                     stringResource(R.string.ai_footer, ai.linesUsed, ai.linesTotal, "%.1f".format(ai.answerSeconds ?: 0.0)),

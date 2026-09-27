@@ -48,4 +48,18 @@
     <string name="status_thinking">सोच रहा है… (इस फ़ोन पर एक मिनट तक लग सकता है)</string>
     <string name="kag_loading">योजना ज्ञान-आधार लोड हो रहा है…</string>
     <string name="kag_ready">%1$d दस्तावेज़ · %2$d अंश · ग्राफ़ में %3$d योजनाएँ</string>
+
+    <!-- Voice (speech to text / text to speech, on-device) -->
+    <string name="voice_input">बोलकर पूछें</string>
+    <string name="listening">सुन रहा है… अपना सवाल %1$s में बोलें</string>
+    <string name="voice_missing_pack">इस फ़ोन पर %1$s के लिए ऑफ़लाइन आवाज़ पहचान अभी इंस्टॉल नहीं है।</string>
+    <string name="voice_not_offline">इस फ़ोन पर %1$s के लिए ऑफ़लाइन आवाज़ पहचान उपलब्ध नहीं है। कृपया सवाल टाइप करें।</string>
+    <string name="voice_download">डाउनलोड करें (एक बार इंटरनेट चाहिए)</string>
+    <string name="voice_downloading">डाउनलोड शुरू हो गया। पूरा होने पर आवाज़ से पूछना ऑफ़लाइन काम करेगा।</string>
+    <string name="voice_unavailable">आवाज़ से पूछने के लिए फ़ोन पर आवाज़ पहचान चाहिए (Android 12 या नया)।</string>
+    <string name="voice_no_match">समझ नहीं आया। माइक दबाकर फिर से बोलें।</string>
+    <string name="mic_permission">आवाज़ से पूछने के लिए माइक्रोफ़ोन की अनुमति दें।</string>
+    <string name="read_aloud">पढ़कर सुनाएँ</string>
+    <string name="stop_reading">पढ़ना रोकें</string>
+    <string name="no_offline_voice">%1$s की कोई ऑफ़लाइन आवाज़ इंस्टॉल नहीं है। सेटिंग्स → टेक्स्ट-टू-स्पीच में जोड़ें।</string>
 </resources>
