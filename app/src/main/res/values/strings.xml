@@ -1,3 +1,51 @@
 <resources>
     <string name="app_name">OCR for Mobile</string>
+
+    <!-- Home -->
+    <string name="language">Language</string>
+    <string name="ocr_engine">OCR engine</string>
+    <string name="scan_document">Scan document</string>
+    <string name="pick_image">Pick image from gallery</string>
+    <string name="scanner_no_page">No page returned from scanner</string>
+    <string name="scanner_unavailable">Document scanner not available on this device — use \"Pick image from gallery\" instead</string>
+
+    <!-- Result -->
+    <string name="result">Result</string>
+    <string name="back">Back</string>
+    <string name="image_info">%1$d × %2$d px · pinch to zoom, boxes show detected lines</string>
+    <string name="recognized_text">Recognized text</string>
+    <string name="engine_offline">Engine: %1$s · offline</string>
+    <string name="reading_text">Reading text on the phone…</string>
+    <string name="run_with_mlkit">Run with ML Kit</string>
+    <string name="no_text_found">No text found in this image.</string>
+    <string name="lines_total">%1$d lines · %2$d ms total</string>
+    <string name="low_confidence_note">%1$d lines below %2$s confidence are highlighted: check them on the paper.</string>
+    <string name="detected_fields">Detected fields</string>
+    <string name="fields_note">Copied exactly as read — nothing is corrected.</string>
+    <string name="more_fields">+%1$d more</string>
+
+    <!-- AI -->
+    <string name="ask_ai_title">Ask the on-device AI (%1$s)</string>
+    <string name="use_kag">Use scheme knowledge base (offline KAG)</string>
+    <string name="copying_model">Copying the model into the app… %1$d%%</string>
+    <string name="no_model">No AI model yet. Copy gemma3-1b-it-int4.task to this phone, then import it once. After that everything runs offline.</string>
+    <string name="import_model">Import model file (.task)</string>
+    <string name="import_another_model">Import another model</string>
+    <string name="summarize">Summarize</string>
+    <string name="asks_for">What does it ask for?</string>
+    <string name="question_hint">Your question about this document</string>
+    <string name="ask">Ask</string>
+    <string name="question_label">Q: %1$s</string>
+    <string name="sources">Sources</string>
+    <string name="evidence_given">Evidence given to the AI</string>
+    <string name="ai_footer">AI-generated — check against the document. Used %1$d of %2$d lines · %3$s s on this phone</string>
+    <string name="answer_in_english_note">The answer is in English: the on-device AI model understands English best. Your question was understood using the knowledge base glossary.</string>
+
+    <!-- Status (ViewModel) -->
+    <string name="status_loading_engine">Loading engine…</string>
+    <string name="status_searching_kag">Searching the scheme knowledge base…</string>
+    <string name="status_loading_model">Loading the AI model…</string>
+    <string name="status_thinking">Thinking… (on this phone, can take up to a minute)</string>
+    <string name="kag_loading">Loading scheme knowledge base…</string>
+    <string name="kag_ready">%1$d documents · %2$d passages · %3$d schemes in graph</string>
 </resources>

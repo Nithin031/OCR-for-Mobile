@@ -1,0 +1,51 @@
+<resources>
+    <string name="app_name">OCR for Mobile</string>
+
+    <!-- Home -->
+    <string name="language">ಭಾಷೆ</string>
+    <string name="ocr_engine">OCR ಎಂಜಿನ್</string>
+    <string name="scan_document">ದಾಖಲೆ ಸ್ಕ್ಯಾನ್ ಮಾಡಿ</string>
+    <string name="pick_image">ಗ್ಯಾಲರಿಯಿಂದ ಚಿತ್ರ ಆಯ್ಕೆಮಾಡಿ</string>
+    <string name="scanner_no_page">ಸ್ಕ್ಯಾನರ್‌ನಿಂದ ಯಾವುದೇ ಪುಟ ಬಂದಿಲ್ಲ</string>
+    <string name="scanner_unavailable">ಈ ಫೋನ್‌ನಲ್ಲಿ ದಾಖಲೆ ಸ್ಕ್ಯಾನರ್ ಲಭ್ಯವಿಲ್ಲ — \"ಗ್ಯಾಲರಿಯಿಂದ ಚಿತ್ರ ಆಯ್ಕೆಮಾಡಿ\" ಬಳಸಿ</string>
+
+    <!-- Result -->
+    <string name="result">ಫಲಿತಾಂಶ</string>
+    <string name="back">ಹಿಂದೆ</string>
+    <string name="image_info">%1$d × %2$d px · ಜೂಮ್ ಮಾಡಲು ಪಿಂಚ್ ಮಾಡಿ, ಬಾಕ್ಸ್‌ಗಳು ಗುರುತಿಸಿದ ಸಾಲುಗಳನ್ನು ತೋರಿಸುತ್ತವೆ</string>
+    <string name="recognized_text">ಗುರುತಿಸಿದ ಪಠ್ಯ</string>
+    <string name="engine_offline">ಎಂಜಿನ್: %1$s · ಆಫ್‌ಲೈನ್</string>
+    <string name="reading_text">ಫೋನ್‌ನಲ್ಲಿ ಪಠ್ಯ ಓದಲಾಗುತ್ತಿದೆ…</string>
+    <string name="run_with_mlkit">ML Kit ನೊಂದಿಗೆ ಚಲಾಯಿಸಿ</string>
+    <string name="no_text_found">ಈ ಚಿತ್ರದಲ್ಲಿ ಯಾವುದೇ ಪಠ್ಯ ಕಂಡುಬಂದಿಲ್ಲ.</string>
+    <string name="lines_total">%1$d ಸಾಲುಗಳು · ಒಟ್ಟು %2$d ms</string>
+    <string name="low_confidence_note">%2$s ಕ್ಕಿಂತ ಕಡಿಮೆ ವಿಶ್ವಾಸದ %1$d ಸಾಲುಗಳನ್ನು ಹೈಲೈಟ್ ಮಾಡಲಾಗಿದೆ: ಇವುಗಳನ್ನು ಕಾಗದದೊಂದಿಗೆ ಹೋಲಿಸಿ.</string>
+    <string name="detected_fields">ಗುರುತಿಸಿದ ಕ್ಷೇತ್ರಗಳು</string>
+    <string name="fields_note">ಓದಿದಂತೆಯೇ ನಕಲಿಸಲಾಗಿದೆ — ಏನನ್ನೂ ತಿದ್ದಲಾಗಿಲ್ಲ.</string>
+    <string name="more_fields">+%1$d ಇನ್ನಷ್ಟು</string>
+
+    <!-- AI -->
+    <string name="ask_ai_title">ಫೋನ್‌ನಲ್ಲೇ ಇರುವ AI ಅನ್ನು ಕೇಳಿ (%1$s)</string>
+    <string name="use_kag">ಯೋಜನೆ ಜ್ಞಾನ ಭಂಡಾರ ಬಳಸಿ (ಆಫ್‌ಲೈನ್ KAG)</string>
+    <string name="copying_model">ಮಾದರಿಯನ್ನು ಆ್ಯಪ್‌ಗೆ ನಕಲಿಸಲಾಗುತ್ತಿದೆ… %1$d%%</string>
+    <string name="no_model">ಇನ್ನೂ AI ಮಾದರಿ ಇಲ್ಲ. gemma3-1b-it-int4.task ಅನ್ನು ಈ ಫೋನ್‌ಗೆ ನಕಲಿಸಿ, ಒಮ್ಮೆ ಆಮದು ಮಾಡಿ. ನಂತರ ಎಲ್ಲವೂ ಆಫ್‌ಲೈನ್‌ನಲ್ಲಿ ಕೆಲಸ ಮಾಡುತ್ತದೆ.</string>
+    <string name="import_model">ಮಾದರಿ ಫೈಲ್ ಆಮದು ಮಾಡಿ (.task)</string>
+    <string name="import_another_model">ಇನ್ನೊಂದು ಮಾದರಿ ಆಮದು ಮಾಡಿ</string>
+    <string name="summarize">ಸಾರಾಂಶ</string>
+    <string name="asks_for">ಇದು ಏನನ್ನು ಕೇಳುತ್ತದೆ?</string>
+    <string name="question_hint">ಈ ದಾಖಲೆಯ ಬಗ್ಗೆ ನಿಮ್ಮ ಪ್ರಶ್ನೆ</string>
+    <string name="ask">ಕೇಳಿ</string>
+    <string name="question_label">ಪ್ರಶ್ನೆ: %1$s</string>
+    <string name="sources">ಮೂಲಗಳು</string>
+    <string name="evidence_given">AI ಗೆ ನೀಡಿದ ಪುರಾವೆಗಳು</string>
+    <string name="ai_footer">AI ರಚಿಸಿದ್ದು — ದಾಖಲೆಯೊಂದಿಗೆ ಹೋಲಿಸಿ. %2$d ರಲ್ಲಿ %1$d ಸಾಲುಗಳನ್ನು ಬಳಸಲಾಗಿದೆ · ಈ ಫೋನ್‌ನಲ್ಲಿ %3$s ಸೆಕೆಂಡು</string>
+    <string name="answer_in_english_note">ಉತ್ತರ ಇಂಗ್ಲಿಷ್‌ನಲ್ಲಿದೆ: ಫೋನ್‌ನಲ್ಲೇ ಇರುವ AI ಮಾದರಿ ಇಂಗ್ಲಿಷ್ ಅನ್ನು ಉತ್ತಮವಾಗಿ ಅರ್ಥಮಾಡಿಕೊಳ್ಳುತ್ತದೆ. ನಿಮ್ಮ ಪ್ರಶ್ನೆಯನ್ನು ಜ್ಞಾನ ಭಂಡಾರದ ಪದಕೋಶದ ಮೂಲಕ ಅರ್ಥಮಾಡಿಕೊಳ್ಳಲಾಗಿದೆ.</string>
+
+    <!-- Status (ViewModel) -->
+    <string name="status_loading_engine">ಎಂಜಿನ್ ಲೋಡ್ ಆಗುತ್ತಿದೆ…</string>
+    <string name="status_searching_kag">ಯೋಜನೆ ಜ್ಞಾನ ಭಂಡಾರದಲ್ಲಿ ಹುಡುಕಲಾಗುತ್ತಿದೆ…</string>
+    <string name="status_loading_model">AI ಮಾದರಿ ಲೋಡ್ ಆಗುತ್ತಿದೆ…</string>
+    <string name="status_thinking">ಯೋಚಿಸುತ್ತಿದೆ… (ಈ ಫೋನ್‌ನಲ್ಲಿ ಒಂದು ನಿಮಿಷದವರೆಗೆ ತೆಗೆದುಕೊಳ್ಳಬಹುದು)</string>
+    <string name="kag_loading">ಯೋಜನೆ ಜ್ಞಾನ ಭಂಡಾರ ಲೋಡ್ ಆಗುತ್ತಿದೆ…</string>
+    <string name="kag_ready">%1$d ದಾಖಲೆಗಳು · %2$d ಭಾಗಗಳು · ಗ್ರಾಫ್‌ನಲ್ಲಿ %3$d ಯೋಜನೆಗಳು</string>
+</resources>

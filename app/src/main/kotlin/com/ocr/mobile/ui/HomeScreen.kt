@@ -46,7 +46,10 @@ import androidx.compose.ui.unit.dp
 import com.google.mlkit.vision.documentscanner.GmsDocumentScanning
 import com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions
 import com.google.mlkit.vision.documentscanner.GmsDocumentScanningResult
+import com.ocr.mobile.AppLanguage
 import com.ocr.mobile.MainViewModel
+import com.ocr.mobile.R
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun HomeScreen(viewModel: MainViewModel) {
@@ -88,7 +91,7 @@ fun HomeScreen(viewModel: MainViewModel) {
             if (uri != null) {
                 viewModel.loadImageFromUri(context, uri)
             } else {
-                pendingError = "No page returned from scanner"
+                pendingError = context.getString(R.string.scanner_no_page)
             }
         }
     }
@@ -108,7 +111,7 @@ fun HomeScreen(viewModel: MainViewModel) {
             }
             .addOnFailureListener { e ->
                 Log.w("HomeScreen", "Document scanner unavailable", e)
-                pendingError = "Document scanner not available on this device — use \"Pick image from gallery\" instead"
+                pendingError = context.getString(R.string.scanner_unavailable)
             }
     }
 
@@ -123,17 +126,22 @@ fun HomeScreen(viewModel: MainViewModel) {
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                text = "OCR for Mobile",
+                text = stringResource(R.string.app_name),
                 style = MaterialTheme.typography.headlineMedium,
             )
             Spacer(Modifier.height(24.dp))
+            LanguageSelector(onSelect = { code ->
+                AppLanguage.set(context, code)
+                activity.recreate()
+            })
+            Spacer(Modifier.height(16.dp))
             EngineSelector(viewModel)
             Spacer(Modifier.height(24.dp))
             Button(
                 onClick = { launchScanner() },
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Text("Scan document")
+                Text(stringResource(R.string.scan_document))
             }
             Spacer(Modifier.height(16.dp))
             OutlinedButton(
@@ -144,7 +152,7 @@ fun HomeScreen(viewModel: MainViewModel) {
                 },
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Text("Pick image from gallery")
+                Text(stringResource(R.string.pick_image))
             }
             if (viewModel.goldenAvailable) {
                 Spacer(Modifier.height(16.dp))
@@ -160,7 +168,7 @@ fun HomeScreen(viewModel: MainViewModel) {
 @Composable
 private fun EngineSelector(viewModel: MainViewModel) {
     val selected by viewModel.engineId.collectAsState()
-    Text("OCR engine", style = MaterialTheme.typography.labelLarge)
+    Text(stringResource(R.string.ocr_engine), style = MaterialTheme.typography.labelLarge)
     Spacer(Modifier.height(8.dp))
     FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         EngineRegistry.entries.forEach { entry ->
@@ -197,4 +205,22 @@ fun GoldenDialog(viewModel: MainViewModel) {
             }
         },
     )
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun LanguageSelector(onSelect: (String) -> Unit) {
+    val context = LocalContext.current
+    val current = remember { AppLanguage.get(context) }
+    Text(stringResource(R.string.language), style = MaterialTheme.typography.labelLarge)
+    Spacer(Modifier.height(8.dp))
+    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        AppLanguage.OPTIONS.forEach { option ->
+            FilterChip(
+                selected = option.code == current,
+                onClick = { if (option.code != current) onSelect(option.code) },
+                label = { Text(option.label) },
+            )
+        }
+    }
 }

@@ -26,6 +26,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import com.ocr.mobile.kag.KagRetriever
 import com.ocr.mobile.kag.KagStore
+import com.ocr.mobile.kag.KagQueryUnderstanding
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
@@ -65,6 +66,8 @@ data class AiUi(
     // Offline scheme knowledge base (KAG) from the web app.
     val kagReady: Boolean = false,
     val kagStatus: String = "",
+    val kagCounts: Triple<Int, Int, Int>? = null,   // documents, passages, graph schemes
+    val questionLanguage: String = "en",            // script of the last question: en / hi / kn
     val useKnowledge: Boolean = true,
     val sources: List<KagSource> = emptyList(),
     // Imported on-device models (file names) and the active one.
@@ -185,7 +188,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private fun runOcr(bitmap: Bitmap, engineId: String, decodeMs: Long?) {
         val entry = EngineRegistry.find(engineId)
         ocrJob?.cancel()
-        _ocr.value = OcrUi(engineId = entry.id, engineName = entry.displayName, running = true, stage = "Loading engine…")
+        _ocr.value = OcrUi(engineId = entry.id, engineName = entry.displayName, running = true, stage = str(R.string.status_loading_engine))
         _ai.update { it.copy(answer = null, question = null, error = null, status = "") }
         ocrJob = viewModelScope.launch(Dispatchers.Default) {
             runCatching {
@@ -268,6 +271,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         return s.copy(modelPresent = active != null, models = gemma.models().map { it.name }, activeModel = active)
     }
 
+    /** A label in the language chosen in the app. */
+    private fun str(id: Int, vararg args: Any): String = AppLanguage.wrap(getApplication()).getString(id, *args)
+
     fun setUseKnowledge(on: Boolean) {
         _ai.update { it.copy(useKnowledge = on) }
     }
@@ -275,14 +281,13 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private fun loadKnowledge() {
         val app = getApplication<Application>()
         if (!KagStore.available(app)) return
-        _ai.update { it.copy(kagStatus = "Loading scheme knowledge base…") }
+        _ai.update { it.copy(kagStatus = str(R.string.kag_loading)) }
         viewModelScope.launch(Dispatchers.IO) {
             runCatching { KagStore.load(app) }
                 .onSuccess { (retriever, info) ->
                     kag = retriever
                     _ai.update {
-                        it.copy(kagReady = true, kagStatus = "${info.documents} documents · ${info.chunks} passages · " +
-                            "${info.schemes} schemes in graph")
+                        it.copy(kagReady = true, kagStatus = "", kagCounts = Triple(info.documents, info.chunks, info.schemes))
                     }
                 }
                 .onFailure { e ->
@@ -297,7 +302,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         if (question.isBlank() || lines.isEmpty() || _ai.value.busy) return
         val retriever = kag.takeIf { _ai.value.useKnowledge }
         _ai.update {
-            it.copy(busy = true, status = if (retriever != null) "Searching the scheme knowledge base…" else "Loading the AI model…",
+            it.copy(busy = true, status = str(if (retriever != null) R.string.status_searching_kag else R.string.status_loading_model),
+                questionLanguage = KagQueryUnderstanding.detectLanguage(question),
                 question = question.trim(), answer = null, answerSeconds = null, error = null, sources = emptyList())
         }
         viewModelScope.launch {
@@ -314,11 +320,17 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                         Log.i("MainViewModel", "KAG intent=${q.intent} schemes=${result.schemes.map { it.code }} " +
                             "chunks=${result.chunks.size} facts=${result.facts.size} used=${used.size}")
                         val schemeQuestion = q.schemeCodes.isNotEmpty() && !q.fromContext
-                        DocPrompt.buildWithKnowledge(lines, question, context, schemeQuestion) to used
+                        // Hindi/Kannada question: the 1B model reads English best, so add the English glossary
+                        // terms the knowledge base used (e.g. "insurance pmfby"). English questions are unchanged.
+                        val promptQuestion = if (q.language == "en") question else {
+                            val english = q.retrievalQuery.removePrefix(question).trim()
+                            if (english.isEmpty()) question else "$question (in English: $english)"
+                        }
+                        DocPrompt.buildWithKnowledge(lines, promptQuestion, context, schemeQuestion) to used
                     }
                 }
                 _ai.update {
-                    it.copy(status = "Loading the AI model…", linesUsed = built.linesUsed, linesTotal = built.linesTotal,
+                    it.copy(status = str(R.string.status_loading_model), linesUsed = built.linesUsed, linesTotal = built.linesTotal,
                         sources = sources.map { s ->
                             val title = if (s.type == "graph_fact") {
                                 "Knowledge graph · ${s.schemeCodes.firstOrNull().orEmpty()} · ${s.section.orEmpty()}"
@@ -327,7 +339,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                         })
                 }
                 gemma.load()
-                _ai.update { it.copy(status = "Thinking… (on this phone, can take up to a minute)") }
+                _ai.update { it.copy(status = str(R.string.status_thinking)) }
                 val start = System.currentTimeMillis()
                 val answer = gemma.generate(built.prompt)
                 answer to (System.currentTimeMillis() - start) / 1000.0

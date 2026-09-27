@@ -27,6 +27,8 @@ import androidx.compose.material3.TextButton
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import com.ocr.mobile.GemmaEngine
+import com.ocr.mobile.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -71,10 +73,10 @@ fun ResultScreen(bitmap: Bitmap, viewModel: MainViewModel) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Result") },
+                title = { Text(stringResource(R.string.result)) },
                 navigationIcon = {
                     IconButton(onClick = { viewModel.goHome() }) {
-                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
                     }
                 },
             )
@@ -89,7 +91,7 @@ fun ResultScreen(bitmap: Bitmap, viewModel: MainViewModel) {
         ) {
             ZoomableDocument(bitmap, ocr)
             Text(
-                text = "${bitmap.width} × ${bitmap.height} px · pinch to zoom, boxes show detected lines",
+                text = stringResource(R.string.image_info, bitmap.width, bitmap.height),
                 style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
@@ -109,9 +111,9 @@ fun ResultScreen(bitmap: Bitmap, viewModel: MainViewModel) {
 }
 @Composable
 private fun FieldsSection(fields: List<DocField>) {
-    Text("Detected fields", style = MaterialTheme.typography.titleMedium)
+    Text(stringResource(R.string.detected_fields), style = MaterialTheme.typography.titleMedium)
     Text(
-        "Copied exactly as read — nothing is corrected.",
+        stringResource(R.string.fields_note),
         style = MaterialTheme.typography.bodySmall,
         color = MaterialTheme.colorScheme.secondary,
     )
@@ -127,7 +129,7 @@ private fun FieldsSection(fields: List<DocField>) {
                     }
                 }
                 if (fields.size > MAX_FIELDS_SHOWN) {
-                    Text("+${fields.size - MAX_FIELDS_SHOWN} more", style = MaterialTheme.typography.bodySmall)
+                    Text(stringResource(R.string.more_fields, fields.size - MAX_FIELDS_SHOWN), style = MaterialTheme.typography.bodySmall)
                 }
             }
         }
@@ -144,8 +146,9 @@ private fun AssistantSection(ocr: OcrUi, ai: AiUi, viewModel: MainViewModel) {
     var question by remember { mutableStateOf("") }
 
     val modelName = ai.activeModel?.let { GemmaEngine.friendlyName(it) } ?: "Gemma"
-    Text("Ask the on-device AI ($modelName)", style = MaterialTheme.typography.titleMedium)
-    if (ai.kagStatus.isNotEmpty()) {
+    Text(stringResource(R.string.ask_ai_title, modelName), style = MaterialTheme.typography.titleMedium)
+    val kagCounts = ai.kagCounts
+    if (ai.kagStatus.isNotEmpty() || kagCounts != null) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Checkbox(
                 checked = ai.useKnowledge && ai.kagReady,
@@ -153,8 +156,13 @@ private fun AssistantSection(ocr: OcrUi, ai: AiUi, viewModel: MainViewModel) {
                 onCheckedChange = { viewModel.setUseKnowledge(it) },
             )
             Column {
-                Text("Use scheme knowledge base (offline KAG)", style = MaterialTheme.typography.bodyMedium)
-                Text(ai.kagStatus, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.secondary)
+                Text(stringResource(R.string.use_kag), style = MaterialTheme.typography.bodyMedium)
+                Text(
+                    kagCounts?.let { (docs, passages, schemes) -> stringResource(R.string.kag_ready, docs, passages, schemes) }
+                        ?: ai.kagStatus,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.secondary,
+                )
             }
         }
     }
@@ -163,35 +171,34 @@ private fun AssistantSection(ocr: OcrUi, ai: AiUi, viewModel: MainViewModel) {
     val progress = ai.importProgress
     when {
         progress != null -> {
-            Text("Copying the model into the app… ${(progress * 100).toInt()}%")
+            Text(stringResource(R.string.copying_model, (progress * 100).toInt()))
             Spacer(Modifier.height(4.dp))
             LinearProgressIndicator(progress = { progress }, modifier = Modifier.fillMaxWidth())
         }
         !ai.modelPresent -> {
             Text(
-                "No AI model yet. Copy gemma3-1b-it-int4.task to this phone, then import it once. " +
-                    "After that everything runs offline.",
+                stringResource(R.string.no_model),
                 style = MaterialTheme.typography.bodyMedium,
             )
             Spacer(Modifier.height(8.dp))
-            Button(onClick = { picker.launch(arrayOf("*/*")) }) { Text("Import model file (.task)") }
+            Button(onClick = { picker.launch(arrayOf("*/*")) }) { Text(stringResource(R.string.import_model)) }
         }
         else -> {
             val canAsk = !ai.busy && ocr.lines.isNotEmpty()
             ModelPicker(ai, onSelect = { viewModel.selectModel(it) }, onImport = { picker.launch(arrayOf("*/*")) })
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                OutlinedButton(enabled = canAsk, onClick = { viewModel.ask(DocPrompt.SUMMARIZE) }) { Text("Summarize") }
-                OutlinedButton(enabled = canAsk, onClick = { viewModel.ask(DocPrompt.ASKS_FOR) }) { Text("What does it ask for?") }
+                OutlinedButton(enabled = canAsk, onClick = { viewModel.ask(DocPrompt.SUMMARIZE) }) { Text(stringResource(R.string.summarize)) }
+                OutlinedButton(enabled = canAsk, onClick = { viewModel.ask(DocPrompt.ASKS_FOR) }) { Text(stringResource(R.string.asks_for)) }
             }
             Spacer(Modifier.height(8.dp))
             OutlinedTextField(
                 value = question,
                 onValueChange = { question = it },
-                label = { Text("Your question about this document") },
+                label = { Text(stringResource(R.string.question_hint)) },
                 modifier = Modifier.fillMaxWidth(),
             )
             Spacer(Modifier.height(8.dp))
-            Button(enabled = canAsk && question.isNotBlank(), onClick = { viewModel.ask(question) }) { Text("Ask") }
+            Button(enabled = canAsk && question.isNotBlank(), onClick = { viewModel.ask(question) }) { Text(stringResource(R.string.ask)) }
         }
     }
 
@@ -211,16 +218,23 @@ private fun AssistantSection(ocr: OcrUi, ai: AiUi, viewModel: MainViewModel) {
         Spacer(Modifier.height(12.dp))
         Card(modifier = Modifier.fillMaxWidth()) {
             Column(modifier = Modifier.padding(12.dp)) {
-                Text("Q: ${ai.question}", style = MaterialTheme.typography.labelLarge)
+                Text(stringResource(R.string.question_label, ai.question.orEmpty()), style = MaterialTheme.typography.labelLarge)
                 Spacer(Modifier.height(6.dp))
                 FormattedAnswer(ai.answer, ai.sources)
                 Spacer(Modifier.height(8.dp))
                 Text(
-                    "AI-generated — check against the document. " +
-                        "Used ${ai.linesUsed} of ${ai.linesTotal} lines · ${"%.1f".format(ai.answerSeconds ?: 0.0)} s on this phone",
+                    stringResource(R.string.ai_footer, ai.linesUsed, ai.linesTotal, "%.1f".format(ai.answerSeconds ?: 0.0)),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.secondary,
                 )
+                if (ai.questionLanguage != "en") {
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        stringResource(R.string.answer_in_english_note),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.secondary,
+                    )
+                }
             }
         }
     }
@@ -241,7 +255,7 @@ private fun ModelPicker(ai: AiUi, onSelect: (String) -> Unit, onImport: () -> Un
                 )
             }
         }
-        TextButton(enabled = !ai.busy, onClick = onImport) { Text("Import another model") }
+        TextButton(enabled = !ai.busy, onClick = onImport) { Text(stringResource(R.string.import_another_model)) }
     }
     Spacer(Modifier.height(4.dp))
 }

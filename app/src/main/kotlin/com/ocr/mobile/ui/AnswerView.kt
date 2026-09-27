@@ -22,6 +22,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ocr.mobile.AnswerFormatter
 import com.ocr.mobile.KagSource
+import com.ocr.mobile.R
+import androidx.compose.ui.res.stringResource
 
 /** The model answer as clean text: headings, bullets, numbered steps, bold, and [n] source numbers. */
 @Composable
@@ -52,7 +54,7 @@ fun FormattedAnswer(answer: String, sources: List<KagSource>) {
         val shown = formatted.citedIndexes.ifEmpty { sources.indices.map { it + 1 }.take(MAX_UNCITED_SOURCES) }
         Spacer(Modifier.height(10.dp))
         Text(
-            if (formatted.citedIndexes.isNotEmpty()) "Sources" else "Evidence given to the AI",
+            stringResource(if (formatted.citedIndexes.isNotEmpty()) R.string.sources else R.string.evidence_given),
             style = MaterialTheme.typography.labelMedium,
         )
         shown.forEach { n ->

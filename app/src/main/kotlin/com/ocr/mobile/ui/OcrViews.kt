@@ -44,6 +44,8 @@ import com.ocr.core.EngineRegistry
 import com.ocr.core.OcrResult
 import com.ocr.core.UNKNOWN_CONFIDENCE
 import com.ocr.mobile.OcrUi
+import com.ocr.mobile.R
+import androidx.compose.ui.res.stringResource
 import kotlin.math.min
 
 private val BoxOk = Color(0xFF1E88E5)
@@ -101,35 +103,34 @@ fun ZoomableDocument(bitmap: Bitmap, ocr: OcrUi) {
 
 @Composable
 fun OcrSection(ocr: OcrUi, onRunMlKit: () -> Unit) {
-    Text("Recognized text", style = MaterialTheme.typography.titleMedium)
+    Text(stringResource(R.string.recognized_text), style = MaterialTheme.typography.titleMedium)
     if (ocr.engineName.isNotEmpty()) {
-        Text("Engine: ${ocr.engineName} · offline", style = MaterialTheme.typography.bodySmall)
+        Text(stringResource(R.string.engine_offline, ocr.engineName), style = MaterialTheme.typography.bodySmall)
     }
     Spacer(Modifier.height(8.dp))
     when {
         ocr.running -> Row(verticalAlignment = Alignment.CenterVertically) {
             CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
             Spacer(Modifier.width(8.dp))
-            Text(ocr.stage.ifEmpty { "Reading text on the phone…" })
+            Text(ocr.stage.ifEmpty { stringResource(R.string.reading_text) })
         }
         ocr.error != null -> {
             Text(ocr.error, color = MaterialTheme.colorScheme.error)
             if (ocr.engineId != EngineRegistry.DEFAULT_ID) {
                 Spacer(Modifier.height(8.dp))
-                Button(onClick = onRunMlKit) { Text("Run with ML Kit") }
+                Button(onClick = onRunMlKit) { Text(stringResource(R.string.run_with_mlkit)) }
             }
         }
-        ocr.ocrLines.isEmpty() -> Text("No text found in this image.")
+        ocr.ocrLines.isEmpty() -> Text(stringResource(R.string.no_text_found))
         else -> {
-            Text("${ocr.ocrLines.size} lines · ${ocr.elapsedMs} ms total", style = MaterialTheme.typography.bodySmall)
+            Text(stringResource(R.string.lines_total, ocr.ocrLines.size, ocr.elapsedMs ?: 0L), style = MaterialTheme.typography.bodySmall)
             if (ocr.pipelineNote.isNotEmpty()) {
                 Text(ocr.pipelineNote, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.secondary)
             }
             TimingsTable(ocr.timings)
             if (ocr.lowConfidence.isNotEmpty()) {
                 Text(
-                    "${ocr.lowConfidence.size} lines below ${"%.2f".format(OcrResult.LOW_CONFIDENCE)} confidence are " +
-                        "highlighted: check them on the paper.",
+                    stringResource(R.string.low_confidence_note, ocr.lowConfidence.size, "%.2f".format(OcrResult.LOW_CONFIDENCE)),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.error,
                 )
