@@ -101,7 +101,7 @@ fun ResultScreen(bitmap: Bitmap, viewModel: MainViewModel) {
                     .padding(vertical = 4.dp),
             )
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-            OcrSection(ocr, onRunMlKit = { viewModel.rerun(EngineRegistry.DEFAULT_ID) }) { text ->
+            OcrSection(ocr, onRunMlKit = { viewModel.rerun(EngineRegistry.FALLBACK_ID) }) { text ->
                 ReadAloudButton(text, key = "ocr", tts = tts, state = ttsState)
             }
             if (ocr.fields.isNotEmpty()) {

@@ -116,7 +116,7 @@ fun OcrSection(ocr: OcrUi, onRunMlKit: () -> Unit, readAloud: @Composable (Strin
         }
         ocr.error != null -> {
             Text(ocr.error, color = MaterialTheme.colorScheme.error)
-            if (ocr.engineId != EngineRegistry.DEFAULT_ID) {
+            if (ocr.engineId != EngineRegistry.FALLBACK_ID) {
                 Spacer(Modifier.height(8.dp))
                 Button(onClick = onRunMlKit) { Text(stringResource(R.string.run_with_mlkit)) }
             }

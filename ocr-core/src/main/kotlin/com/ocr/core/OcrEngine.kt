@@ -48,13 +48,17 @@ data class OcrResult(
     }
 }
 
-/** The engines this build offers. ML Kit is the default and always available. */
+/** The engines this build offers. ML Kit English + Hindi (auto) is the default; plain ML Kit Latin is the fallback. */
 object EngineRegistry {
     class Entry(val id: String, val displayName: String, val create: (Context) -> OcrEngine)
 
-    const val DEFAULT_ID = MlKitEngine.ID
+    const val DEFAULT_ID = MlKitAutoEngine.ID
+
+    /** Used by "Run with ML Kit" when another engine fails: the single-pass Latin engine. */
+    const val FALLBACK_ID = MlKitEngine.ID
 
     val entries: List<Entry> = listOf(
+        Entry(MlKitAutoEngine.ID, MlKitAutoEngine.NAME) { MlKitAutoEngine() },
         Entry(MlKitEngine.ID, MlKitEngine.NAME) { MlKitEngine() },
         Entry(MlKitEngine.HINDI_ID, MlKitEngine.HINDI_NAME) { MlKitEngine.hindi() },
         Entry(PpOcrV6Engine.ID, PpOcrV6Engine.NAME) { ctx -> PpOcrV6Engine(ctx) },
