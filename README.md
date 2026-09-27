@@ -106,3 +106,17 @@ The app never downloads the model; you import it yourself.
 4. Answers are AI-generated: always check names, ID numbers, dates and amounts
    against the document. Only the first ~2000 characters of text are sent to
    the model; the answer card shows how many lines were used.
+## Engines and golden check (Phases 3–4)
+
+- **Engines:** pick one on the home screen. *ML Kit* (default, bundled Latin model) or
+  *PP-OCRv6 Small* (ONNX Runtime CPU + OpenCV, det max side 960). Both run fully offline.
+  If PP-OCR fails to load or run, the result screen offers **Run with ML Kit**.
+- **Assets:** `tools/reference/fetch_models.py` → `build_android_assets.py` →
+  `tools/reference/android_assets/models/` → Gradle `copyModels` → APK assets.
+  `pipeline_max960.json` holds the max960 pipeline values and PaddleX defaults, each with its source.
+- **Golden check (debug builds):** home screen → select engine → *Run golden check*. It runs 3 sample
+  forms (EPFO, Parivahan, Aadhaar Update) against `golden/max960/paddle`, matches boxes by IoU ≥ 0.5 and
+  reports box counts, unmatched boxes and per-line/overall CER:
+  `adb pull /sdcard/Android/data/com.ocr.mobile/files/golden_report.txt`
+- **Known limitations:** no benchmark mode; 960 only; Latin/English dictionary use only, no Indian
+  scripts; not speed-optimized (FP32, CPU); no image quality gate; arm64-v8a devices only.

@@ -15,6 +15,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.TextButton
+import androidx.compose.ui.text.font.FontFamily
+import com.ocr.mobile.GOLDEN_RUNNING
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
@@ -105,6 +112,7 @@ fun HomeScreen(viewModel: MainViewModel) {
             }
     }
 
+    GoldenDialog(viewModel)
     Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }) { padding ->
         Column(
             modifier = Modifier
@@ -138,6 +146,12 @@ fun HomeScreen(viewModel: MainViewModel) {
             ) {
                 Text("Pick image from gallery")
             }
+            if (viewModel.goldenAvailable) {
+                Spacer(Modifier.height(16.dp))
+                TextButton(onClick = { viewModel.runGoldenCheck() }) {
+                    Text("Run golden check (debug, selected engine)")
+                }
+            }
         }
     }
 }
@@ -160,4 +174,27 @@ private fun EngineSelector(viewModel: MainViewModel) {
             )
         }
     }
+}
+
+@Composable
+fun GoldenDialog(viewModel: MainViewModel) {
+    val text by viewModel.golden.collectAsState()
+    val report = text ?: return
+    AlertDialog(
+        onDismissRequest = { viewModel.dismissGolden() },
+        confirmButton = {
+            if (report != GOLDEN_RUNNING) TextButton(onClick = { viewModel.dismissGolden() }) { Text("Close") }
+        },
+        title = { Text("Golden check") },
+        text = {
+            SelectionContainer {
+                Text(
+                    report,
+                    style = MaterialTheme.typography.bodySmall,
+                    fontFamily = FontFamily.Monospace,
+                    modifier = Modifier.verticalScroll(rememberScrollState()),
+                )
+            }
+        },
+    )
 }

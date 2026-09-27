@@ -61,6 +61,8 @@ data class AiUi(
     val error: String? = null,
 )
 
+const val GOLDEN_RUNNING = "Running golden check…"
+
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     private val gemma = GemmaEngine(application)
@@ -192,6 +194,30 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 )
             }
         }
+    }
+
+    // Debug-only golden smoke check (sample assets exist only in debug builds).
+    val goldenAvailable: Boolean = GoldenCheck.available(application)
+    private val _golden = MutableStateFlow<String?>(null)
+    val golden: StateFlow<String?> = _golden.asStateFlow()
+
+    fun runGoldenCheck() {
+        if (_golden.value == GOLDEN_RUNNING) return
+        _golden.value = GOLDEN_RUNNING
+        viewModelScope.launch(Dispatchers.Default) {
+            _golden.value = runCatching {
+                val engine = engine(_engineId.value)
+                val (report, file) = GoldenCheck.run(getApplication(), engine)
+                "Report saved to ${file.absolutePath}\n\n$report"
+            }.getOrElse { e ->
+                Log.e("MainViewModel", "Golden check failed", e)
+                "Golden check failed: ${e.message ?: e.javaClass.simpleName}"
+            }
+        }
+    }
+
+    fun dismissGolden() {
+        if (_golden.value != GOLDEN_RUNNING) _golden.value = null
     }
 
     fun importModel(uri: Uri) {
