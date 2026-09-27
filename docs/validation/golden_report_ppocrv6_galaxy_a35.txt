@@ -1,0 +1,119 @@
+Golden smoke check · engine PP-OCRv6 Small (ONNX) · reference PaddleX max960
+Match: axis-aligned IoU >= 0.5, greedy one-to-one. CER = edit distance / golden chars.
+
+== Adhaar Update.jpg  ({"width":768,"height":1024})
+  boxes: golden 71, ours 71, matched 71, unmatched golden 0, unmatched ours 0
+  CER 0.0066  (14 edits / 2121 chars)  · 9221 ms
+    Bitmap to BGR: 16 ms
+    Detection (960): 632 ms
+    Crop 71 lines: 18 ms
+    Recognition: 8543 ms
+    Reading order + fields: 12 ms
+  lines with differences:
+    CER 1.000  gold: 2
+               ours: a
+    CER 0.027  gold: To be printed on plain A4 paper size;
+               ours: To be printed on piain A4 paper size;
+    CER 0.017  gold: INDIVIDUAL SEEKING TO ENROL/ AADHAAR NUMBER HOLDER DETAILS
+               ours: INDIVIDUAL SEEKING TO ENROL/AADHAAR NUMBER HOLDER DETAILS
+    CER 0.100  gold: Photograph
+               ours: Photograph.
+    CER 0.118  gold: by the Cortifier.
+               ours: by the Certifter.
+    CER 0.041  gold: No overwritingIssue date is filledResident's signatureCertifier's details
+               ours: □No overwriting□Issue date is filled□Resident's signatureCertifier's details
+    CER 0.028  gold: Tehsildar/ Gazetted Officer Group Br
+               ours: Tehsildar/ Gazetted Officer Group B
+    CER 0.013  gold: Department / Project Director of the State AlDS Control Society or his nominee
+               ours: Department / Project Director of the State AlDs Control Society or his nominee
+    CER 0.100  gold: conterned)
+               ours: concerned)
+    CER 0.013  gold: □Village Panchayat Head/ President or Mukhiya/ Gaon Bura/ equivalent authority
+               ours: Village Panchayat Head/ President or Mukhiya/ Gaon Bura/ equivalent authority
+    CER 0.029  gold: Signacure & Stamp of ther Certfier
+               ours: Signature & Stamp of ther Certfier
+
+== EPFO.jpg  ({"width":693,"height":1024})
+  boxes: golden 80, ours 78, matched 78, unmatched golden 2, unmatched ours 0
+  CER 0.0666  (111 edits / 1667 chars)  · 9265 ms
+    Bitmap to BGR: 5 ms
+    Detection (960): 430 ms
+    Crop 80 lines: 21 ms
+    Recognition: 8798 ms
+    Reading order + fields: 11 ms
+  lines with differences:
+    CER 0.026  gold: EMPLOYEES' PROVIDENT FUNDS SCHEME.1962
+               ours: EMPLOYEES' PROVIDENT FUNDS SCHEME,1962
+    CER 0.105  gold: /Name of the member
+               ours:   /Name of the member
+    CER 0.091  gold: (/ a)   /Father's Name
+               ours: (/a)  /Father's Name
+    CER 0.100  gold: (/b)T/Husband's Name
+               ours: (/b) /Husband'sName
+    CER 0.100  gold: s faf/ Date of Birth
+               ours:  fa/ Date of Birth
+    CER 0.081  gold: /   T/Name and Address of the Factory
+               ours: /    T/ Name and Address of the Factory/
+    CER 0.074  gold: (/a):  a ./P.F. Account No.
+               ours: (/ a):   a ./P.F. Account No.
+    CER 0.048  gold: (/b):   (..)/Universal Account Number(UAN)
+               ours: (/b):  (...)/Universal Account Number(UAN)
+    CER 0.051  gold: rafaf/Date of Joining the Establishment
+               ours: faf/Date of Joining the Establishment
+    CER 0.037  gold: 可/Reason of leaving Service
+               ours: /Reason of leaving Service
+    CER 0.222  gold: 可市可(可)职可取可可(可)可/同可
+               ours: 可市可(用)职可可取何可可(可)可/能可
+    CER 0.600  gold: *可a()
+               ours:  ()
+    CER 0.400  gold: 15/15
+               ours:  15 /15
+    CER 0.500  gold: (对/)
+               ours: (/f)
+    CER 0.273  gold: 15/15可扩(可含)
+               ours: 15/15(可)
+    CER 0.158  gold: 5 /Only In cas of service le than5yoar
+               ours: 5 /Only In ca of sorvice les than 5 year
+    CER 0.040  gold: -  T T/Ful Postal address
+               ours: - T T/Ful Postal address
+    CER 0.136  gold:  ffi /Mode of payment:
+               ours:   f / Mode of payment:
+    CER 0.038  gold: a /Saving Bank Account No.
+               ours:   /Saving Bank Account No.
+    CER 0.310  gold: wifer feft  arew it few r (√)
+               ours: wifer fef wi few (√)
+    CER 0.030  gold: Put a 'Tick against the one opted
+               ours: Put a 'Tick' against the one opted
+    CER 1.000  gold: w r i teife w pe o i qe
+               ours: /g
+    CER 0.083  gold: SITEIT 可 TAT
+               ours: SITET 可 TAT
+    CER 0.024  gold: (a     /Please attach a copy of cancelled
+               ours: (a    /Please attach a copy of cancelled
+    CER 0.011  gold:     (/)/ The member hereby declares that he has not been employed for two months (Yes/No.)
+               ours:      (/)/ The member hereby declares that he has not been employed for two months (Yes/No.)
+    CER 0.124  gold: fér f a  f: irft qef arrerft sre 3re fire mt / Certiied that the particulars are true to the best of my knowledge
+               ours: gfer f ar  f: rft qof arrerft : srg 3rres: firw mft / Certiied that the particulars are true to the best of my knowledge.
+    CER 0.113  gold: f    er f / sapst  / The Applicant has signed/thumb impressed before me
+               ours: f    ger f/ s / The Applicant has signed/thumb impressed before me.
+    CER 0.091  gold:   e/Member's Signature
+               ours: e/Member's Signature
+    CER 0.111  gold: ri are/Employer's Signature
+               ours: rir  ae/Employer's Signature
+    CER 0.054  gold: / Or   t f/ Member's thumb impression
+               ours: / Or   st fr/ Member's thumb impression
+    CER 0.027  gold: r   s /Designation & Seal of Employer
+               ours: r   s / Designation & Seal of Employer
+    CER 0.091  gold: fafit/ Date
+               ours: fafit / Date
+
+== Parivahan.jpg  ({"width":462,"height":663})
+  boxes: golden 43, ours 43, matched 43, unmatched golden 0, unmatched ours 0
+  CER 0.0000  (0 edits / 1974 chars)  · 7719 ms
+    Bitmap to BGR: 1 ms
+    Detection (960): 198 ms
+    Crop 43 lines: 9 ms
+    Recognition: 7504 ms
+    Reading order + fields: 7 ms
+
+OVERALL CER 0.0217  (125 edits / 5762 chars)
