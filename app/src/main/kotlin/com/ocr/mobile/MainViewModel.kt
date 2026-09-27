@@ -297,7 +297,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 }
                 _ai.update {
                     it.copy(status = "Loading the AI model…", linesUsed = built.linesUsed, linesTotal = built.linesTotal,
-                        sources = sources.map { s -> KagSource(s.id, s.title, s.url) })
+                        sources = sources.map { s ->
+                            val title = if (s.type == "graph_fact") {
+                                "Knowledge graph · ${s.schemeCodes.firstOrNull().orEmpty()} · ${s.section.orEmpty()}"
+                            } else s.title
+                            KagSource(s.id, title, s.url)
+                        })
                 }
                 gemma.load()
                 _ai.update { it.copy(status = "Thinking… (on this phone, can take up to a minute)") }

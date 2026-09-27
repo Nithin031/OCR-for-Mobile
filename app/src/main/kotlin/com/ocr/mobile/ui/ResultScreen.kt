@@ -206,18 +206,7 @@ private fun AssistantSection(ocr: OcrUi, ai: AiUi, viewModel: MainViewModel) {
             Column(modifier = Modifier.padding(12.dp)) {
                 Text("Q: ${ai.question}", style = MaterialTheme.typography.labelLarge)
                 Spacer(Modifier.height(6.dp))
-                SelectionContainer { Text(ai.answer, style = MaterialTheme.typography.bodyMedium) }
-                if (ai.sources.isNotEmpty()) {
-                    Spacer(Modifier.height(8.dp))
-                    Text("Knowledge base sources", style = MaterialTheme.typography.labelMedium)
-                    ai.sources.distinctBy { it.title }.forEach { s ->
-                        Text(
-                            "• ${s.title}${s.url?.let { u -> " — $u" }.orEmpty()}",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.secondary,
-                        )
-                    }
-                }
+                FormattedAnswer(ai.answer, ai.sources)
                 Spacer(Modifier.height(8.dp))
                 Text(
                     "AI-generated — check against the document. " +
