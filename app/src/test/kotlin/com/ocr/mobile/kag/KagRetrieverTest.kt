@@ -103,6 +103,16 @@ class KagRetrieverTest {
     }
 
     @Test
+    fun documentsQuestionPutsRequiredDocumentsFactFirst() {
+        val r = retriever()
+        val result = r.retrieve(r.understand("What documents do I need for crop insurance PMFBY"))
+        assertEquals("documents", result.query.intent)
+        val (context, used) = KagRetriever.buildContext(result, maxChars = 250)
+        assertEquals("fact_pmfby_docs", used.first().id)
+        assertTrue("Land record (RTC)" in context)
+    }
+
+    @Test
     fun languageDetectionByScript() {
         assertEquals("kn", KagQueryUnderstanding.detectLanguage("ಬೆಳೆ ಹಾನಿ"))
         assertEquals("hi", KagQueryUnderstanding.detectLanguage("फसल नुकसान"))

@@ -17,6 +17,8 @@ object DocPrompt {
 
     /** With knowledge-base evidence the document text gets less room, so the total stays inside MAX_TOKENS. */
     const val MAX_DOC_CHARS_WITH_KAG = 1000
+    /** When the question itself names a scheme, the knowledge base is the main source: less document text. */
+    const val MAX_DOC_CHARS_SCHEME_QUESTION = 400
     const val MAX_KAG_CHARS = 1500
 
     // Core rules of the web app's KAG system prompt (backend/app/kag/prompts.py), shortened for a 1B model.
@@ -37,8 +39,8 @@ object DocPrompt {
     }
 
     /** Same as [build] plus the KAG context from KagRetriever.buildContext. */
-    fun buildWithKnowledge(lines: List<String>, question: String, kagContext: String): Built {
-        val (used, count, note) = fit(lines, MAX_DOC_CHARS_WITH_KAG)
+    fun buildWithKnowledge(lines: List<String>, question: String, kagContext: String, schemeQuestion: Boolean = false): Built {
+        val (used, count, note) = fit(lines, if (schemeQuestion) MAX_DOC_CHARS_SCHEME_QUESTION else MAX_DOC_CHARS_WITH_KAG)
         val prompt = "$KAG_INSTRUCTIONS\n\nDocument text:\n$used$note\n$kagContext\n\nQuestion: ${question.trim()}"
         return Built(prompt, count, lines.size)
     }

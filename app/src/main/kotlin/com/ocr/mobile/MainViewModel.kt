@@ -307,7 +307,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                         val (context, used) = KagRetriever.buildContext(result, DocPrompt.MAX_KAG_CHARS)
                         Log.i("MainViewModel", "KAG intent=${q.intent} schemes=${result.schemes.map { it.code }} " +
                             "chunks=${result.chunks.size} facts=${result.facts.size} used=${used.size}")
-                        DocPrompt.buildWithKnowledge(lines, question, context) to used
+                        val schemeQuestion = q.schemeCodes.isNotEmpty() && !q.fromContext
+                        DocPrompt.buildWithKnowledge(lines, question, context, schemeQuestion) to used
                     }
                 }
                 _ai.update {

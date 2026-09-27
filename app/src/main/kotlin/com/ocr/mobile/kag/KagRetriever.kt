@@ -199,6 +199,10 @@ class KagRetriever(
             "how_to_apply" to listOf("apply", "registration", "intimate", "what the farmer should do", "how to"),
             "amount" to listOf("amount", "benefit", "premium", "overview"),
         )
+        private val FACT_SECTIONS_FOR_INTENT = mapOf(
+            "documents" to "Required documents",
+            "eligibility" to "Eligibility rule",
+        )
         private val ANCHOR_SECTIONS = mapOf(
             "documents" to listOf("document"), "eligibility" to listOf("eligib"),
             "how_to_apply" to listOf("apply", "intimate", "should do", "registration"),
@@ -233,7 +237,11 @@ class KagRetriever(
             val sb = StringBuilder("GRAPH FACTS (knowledge graph):\n")
             fun fits(s: String) = sb.length + s.length <= maxChars
             if (r.facts.isEmpty()) sb.append("(none)\n")
-            for (f in r.facts) {
+            // The on-device budget fits only a few facts: put the ones matching the question's intent first
+            // (e.g. "Required documents" for a documents question), keeping graph order otherwise.
+            val wanted = FACT_SECTIONS_FOR_INTENT[r.query.intent]
+            val facts = if (wanted == null) r.facts else r.facts.sortedBy { if (it.section == wanted) 0 else 1 }
+            for (f in facts) {
                 val sup = f.supportingDocument?.let { " (supported by: $it)" }.orEmpty()
                 val line = "[${f.id}] ${f.text}$sup\n"
                 if (!fits(line)) break
