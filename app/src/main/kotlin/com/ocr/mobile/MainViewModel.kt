@@ -8,8 +8,11 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.ocr.core.AssetVerifier
+import com.ocr.core.DocField
 import com.ocr.core.ImageDecoder
 import com.ocr.core.MlKitOcr
+import com.ocr.core.OcrPipeline
+import com.ocr.core.PipelineResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,6 +34,9 @@ data class OcrUi(
     val lines: List<String> = emptyList(),
     val elapsedMs: Long? = null,
     val error: String? = null,
+    val lowConfidence: Set<Int> = emptySet(),   // indices into lines
+    val fields: List<DocField> = emptyList(),
+    val pipelineNote: String = "",
 )
 
 data class AiUi(
@@ -49,6 +55,7 @@ data class AiUi(
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     private val ocr = MlKitOcr()
+    private val pipeline = OcrPipeline(ocr)
     private val gemma = GemmaEngine(application)
 
     private val _uiState = MutableStateFlow<AppUiState>(AppUiState.Home)
@@ -97,13 +104,38 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         _ocr.value = OcrUi(running = true)
         _ai.update { it.copy(answer = null, question = null, error = null, status = "") }
         viewModelScope.launch(Dispatchers.Default) {
-            runCatching { ocr.recognize(bitmap) }
-                .onSuccess { out -> _ocr.value = OcrUi(lines = out.lines.map { it.text }, elapsedMs = out.elapsedMs) }
+            runCatching { pipeline.run(bitmap) }
+                .onSuccess { r ->
+                    _ocr.value = OcrUi(
+                        lines = r.output.lines.map { it.text },
+                        elapsedMs = r.totalMs,
+                        lowConfidence = r.lowConfidence,
+                        fields = r.fields,
+                        pipelineNote = pipelineNote(r),
+                    )
+                }
                 .onFailure { e ->
                     Log.e("MainViewModel", "OCR failed", e)
                     _ocr.value = OcrUi(error = "Text recognition failed: ${e.message}")
                 }
         }
+    }
+
+    private fun pipelineNote(r: PipelineResult): String {
+        val parts = mutableListOf(if (r.passes == 1) "1 pass" else "${r.passes} passes")
+        val plan = r.enhancePlan
+        if (r.usedEnhanced && plan != null) {
+            val how = listOfNotNull(
+                "grayscale",
+                if (plan.stretches) "contrast boost" else null,
+                if (plan.upscale > 1f) "%.1f× upscale".format(plan.upscale) else null,
+            )
+            parts += "enhanced image used (${how.joinToString(", ")})"
+        } else if (r.passes > 1) {
+            parts += "original image kept"
+        }
+        if (r.output.skewDegrees != 0f) parts += "tilt %.1f° corrected in reading order".format(r.output.skewDegrees)
+        return parts.joinToString(" · ")
     }
 
     fun importModel(uri: Uri) {

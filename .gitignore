@@ -18,3 +18,6 @@ gradle/wrapper/dists/
 # Android keystore
 *.jks
 *.keystore
+
+# Kotlin compiler caches
+.kotlin/

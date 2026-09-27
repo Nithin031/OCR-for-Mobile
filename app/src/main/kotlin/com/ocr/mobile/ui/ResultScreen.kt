@@ -43,7 +43,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import com.ocr.core.DocField
+import com.ocr.core.FieldKind
 import com.ocr.mobile.AiUi
 import com.ocr.mobile.DocPrompt
 import com.ocr.mobile.MainViewModel
@@ -91,6 +97,10 @@ fun ResultScreen(bitmap: Bitmap, viewModel: MainViewModel) {
             )
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
             OcrSection(ocr)
+            if (ocr.fields.isNotEmpty()) {
+                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+                FieldsSection(ocr.fields)
+            }
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
             AssistantSection(ocr, ai, viewModel)
             Spacer(Modifier.height(24.dp))
@@ -115,11 +125,34 @@ private fun OcrSection(ocr: OcrUi) {
                 "${ocr.lines.size} lines · ${ocr.elapsedMs} ms (ML Kit, offline)",
                 style = MaterialTheme.typography.bodySmall,
             )
+            if (ocr.pipelineNote.isNotEmpty()) {
+                Text(ocr.pipelineNote, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.secondary)
+            }
+            if (ocr.lowConfidence.isNotEmpty()) {
+                Text(
+                    "${ocr.lowConfidence.size} unclear lines are underlined in red: check them on the paper.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.error,
+                )
+            }
             Spacer(Modifier.height(4.dp))
+            val errorColor = MaterialTheme.colorScheme.error
+            val text = remember(ocr.lines, ocr.lowConfidence, errorColor) {
+                buildAnnotatedString {
+                    ocr.lines.forEachIndexed { i, line ->
+                        if (i > 0) append('\n')
+                        if (i in ocr.lowConfidence) {
+                            withStyle(SpanStyle(color = errorColor, textDecoration = TextDecoration.Underline)) { append(line) }
+                        } else {
+                            append(line)
+                        }
+                    }
+                }
+            }
             Card(modifier = Modifier.fillMaxWidth()) {
                 SelectionContainer {
                     Text(
-                        text = ocr.lines.joinToString("\n"),
+                        text = text,
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.padding(12.dp),
                     )
@@ -128,6 +161,35 @@ private fun OcrSection(ocr: OcrUi) {
         }
     }
 }
+
+@Composable
+private fun FieldsSection(fields: List<DocField>) {
+    Text("Detected fields", style = MaterialTheme.typography.titleMedium)
+    Text(
+        "Copied exactly as read — nothing is corrected.",
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.secondary,
+    )
+    Spacer(Modifier.height(4.dp))
+    Card(modifier = Modifier.fillMaxWidth()) {
+        SelectionContainer {
+            Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                fields.take(MAX_FIELDS_SHOWN).forEach { f ->
+                    Column {
+                        val caption = if (f.kind == FieldKind.TEXT || f.label == f.kind.label) f.label else "${f.label} · ${f.kind.label}"
+                        Text(caption, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
+                        Text(f.value, style = MaterialTheme.typography.bodyMedium)
+                    }
+                }
+                if (fields.size > MAX_FIELDS_SHOWN) {
+                    Text("+${fields.size - MAX_FIELDS_SHOWN} more", style = MaterialTheme.typography.bodySmall)
+                }
+            }
+        }
+    }
+}
+
+private const val MAX_FIELDS_SHOWN = 40
 
 @Composable
 private fun AssistantSection(ocr: OcrUi, ai: AiUi, viewModel: MainViewModel) {
