@@ -113,6 +113,23 @@ class KagRetrieverTest {
     }
 
     @Test
+    fun hindiAndKannadaQuestionsFindTheSchemeAndIntent() {
+        val r = retriever()
+        val hi = r.understand("फसल बीमा के लिए कौन से दस्तावेज़ चाहिए?")
+        assertEquals("hi", hi.language)
+        assertEquals("documents", hi.intent)
+        assertEquals(listOf("PMFBY"), hi.schemeCodes)            // via glossary: बीमा -> "insurance pmfby"
+        assertTrue(hi.retrievalQuery.contains("documents"))
+
+        val kn = r.understand("ಬೆಳೆ ವಿಮೆಗೆ ಯಾವ ದಾಖಲೆಗಳು ಬೇಕು?")
+        assertEquals("kn", kn.language)
+        assertEquals("documents", kn.intent)
+        assertEquals(listOf("PMFBY"), kn.schemeCodes)            // ವಿಮೆ -> "insurance pmfby"
+        val result = r.retrieve(kn)
+        assertEquals("fact_pmfby_docs", KagRetriever.buildContext(result, maxChars = 250).second.first().id)
+    }
+
+    @Test
     fun languageDetectionByScript() {
         assertEquals("kn", KagQueryUnderstanding.detectLanguage("ಬೆಳೆ ಹಾನಿ"))
         assertEquals("hi", KagQueryUnderstanding.detectLanguage("फसल नुकसान"))
