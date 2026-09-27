@@ -13,7 +13,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
+import androidx.compose.runtime.collectAsState
+import com.ocr.core.EngineRegistry
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
@@ -112,7 +118,9 @@ fun HomeScreen(viewModel: MainViewModel) {
                 text = "OCR for Mobile",
                 style = MaterialTheme.typography.headlineMedium,
             )
-            Spacer(Modifier.height(48.dp))
+            Spacer(Modifier.height(24.dp))
+            EngineSelector(viewModel)
+            Spacer(Modifier.height(24.dp))
             Button(
                 onClick = { launchScanner() },
                 modifier = Modifier.fillMaxWidth(),
@@ -130,6 +138,26 @@ fun HomeScreen(viewModel: MainViewModel) {
             ) {
                 Text("Pick image from gallery")
             }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@Composable
+private fun EngineSelector(viewModel: MainViewModel) {
+    val selected by viewModel.engineId.collectAsState()
+    Text("OCR engine", style = MaterialTheme.typography.labelLarge)
+    Spacer(Modifier.height(8.dp))
+    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        EngineRegistry.entries.forEach { entry ->
+            FilterChip(
+                selected = entry.id == selected,
+                onClick = {
+                    viewModel.selectEngine(entry.id)
+                    viewModel.warmUp(entry.id)
+                },
+                label = { Text(entry.displayName) },
+            )
         }
     }
 }

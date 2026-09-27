@@ -12,14 +12,16 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
 /**
- * One recognized line. [confidence] is ML Kit's 0..1 score, or [UNKNOWN_CONFIDENCE] when the model gives
- * none; [angle] is the line's rotation in degrees (clockwise positive).
+ * One recognized line. [confidence] is the engine's 0..1 score, or [UNKNOWN_CONFIDENCE] when it gives
+ * none (never faked); [angle] is the line's rotation in degrees (clockwise positive). [corners] is the
+ * line quadrilateral as x0,y0..x3,y3 in TL, TR, BR, BL order, or null if the engine has only [box].
  */
 data class OcrLine(
     val text: String,
     val box: Rect,
     val confidence: Float = UNKNOWN_CONFIDENCE,
     val angle: Float = 0f,
+    val corners: FloatArray? = null,
 )
 
 const val UNKNOWN_CONFIDENCE = -1f
@@ -56,7 +58,11 @@ class MlKitOcr : Closeable {
                 val box = line.boundingBox ?: return@mapNotNull null
                 if (line.text.isBlank()) return@mapNotNull null
                 val conf = line.confidence
-                OcrLine(line.text, box, if (conf > 0f) conf else UNKNOWN_CONFIDENCE, line.angle)
+                // ML Kit returns corner points clockwise from top-left: TL, TR, BR, BL.
+                val corners = line.cornerPoints?.takeIf { it.size == 4 }?.let { pts ->
+                    FloatArray(8) { i -> (if (i % 2 == 0) pts[i / 2].x else pts[i / 2].y).toFloat() }
+                }
+                OcrLine(line.text, box, if (conf > 0f) conf else UNKNOWN_CONFIDENCE, line.angle, corners)
             }
     }
 

@@ -49,6 +49,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.ocr.core.DocField
+import com.ocr.core.EngineRegistry
 import com.ocr.core.FieldKind
 import com.ocr.mobile.AiUi
 import com.ocr.mobile.DocPrompt
@@ -80,23 +81,16 @@ fun ResultScreen(bitmap: Bitmap, viewModel: MainViewModel) {
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 16.dp, vertical = 8.dp),
         ) {
-            Image(
-                bitmap = bitmap.asImageBitmap(),
-                contentDescription = "Captured document",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(280.dp),
-                contentScale = ContentScale.Fit,
-            )
+            ZoomableDocument(bitmap, ocr)
             Text(
-                text = "${bitmap.width} × ${bitmap.height} px",
+                text = "${bitmap.width} × ${bitmap.height} px · pinch to zoom, boxes show detected lines",
                 style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .padding(vertical = 4.dp),
             )
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-            OcrSection(ocr)
+            OcrSection(ocr, onRunMlKit = { viewModel.rerun(EngineRegistry.DEFAULT_ID) })
             if (ocr.fields.isNotEmpty()) {
                 HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
                 FieldsSection(ocr.fields)
@@ -107,61 +101,6 @@ fun ResultScreen(bitmap: Bitmap, viewModel: MainViewModel) {
         }
     }
 }
-
-@Composable
-private fun OcrSection(ocr: OcrUi) {
-    Text("Recognized text", style = MaterialTheme.typography.titleMedium)
-    Spacer(Modifier.height(8.dp))
-    when {
-        ocr.running -> Row(verticalAlignment = Alignment.CenterVertically) {
-            CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
-            Spacer(Modifier.width(8.dp))
-            Text("Reading text on the phone…")
-        }
-        ocr.error != null -> Text(ocr.error, color = MaterialTheme.colorScheme.error)
-        ocr.lines.isEmpty() -> Text("No text found in this image.")
-        else -> {
-            Text(
-                "${ocr.lines.size} lines · ${ocr.elapsedMs} ms (ML Kit, offline)",
-                style = MaterialTheme.typography.bodySmall,
-            )
-            if (ocr.pipelineNote.isNotEmpty()) {
-                Text(ocr.pipelineNote, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.secondary)
-            }
-            if (ocr.lowConfidence.isNotEmpty()) {
-                Text(
-                    "${ocr.lowConfidence.size} unclear lines are underlined in red: check them on the paper.",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.error,
-                )
-            }
-            Spacer(Modifier.height(4.dp))
-            val errorColor = MaterialTheme.colorScheme.error
-            val text = remember(ocr.lines, ocr.lowConfidence, errorColor) {
-                buildAnnotatedString {
-                    ocr.lines.forEachIndexed { i, line ->
-                        if (i > 0) append('\n')
-                        if (i in ocr.lowConfidence) {
-                            withStyle(SpanStyle(color = errorColor, textDecoration = TextDecoration.Underline)) { append(line) }
-                        } else {
-                            append(line)
-                        }
-                    }
-                }
-            }
-            Card(modifier = Modifier.fillMaxWidth()) {
-                SelectionContainer {
-                    Text(
-                        text = text,
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.padding(12.dp),
-                    )
-                }
-            }
-        }
-    }
-}
-
 @Composable
 private fun FieldsSection(fields: List<DocField>) {
     Text("Detected fields", style = MaterialTheme.typography.titleMedium)
