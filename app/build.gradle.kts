@@ -15,6 +15,8 @@ android {
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        // PP-OCRv6 (ONNX Runtime + OpenCV) ships native code; phones only need arm64.
+        ndk { abiFilters += "arm64-v8a" }
     }
 
     buildTypes {

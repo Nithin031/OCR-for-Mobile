@@ -86,6 +86,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val _errorMessage = MutableSharedFlow<String>(extraBufferCapacity = 1)
     val errorMessage: SharedFlow<String> = _errorMessage.asSharedFlow()
 
+    init {
+        // Load every engine's models in the background at app start (PP-OCR takes a few seconds).
+        EngineRegistry.entries.forEach { warmUp(it.id) }
+    }
+
     fun verifyAssets(context: Context) {
         viewModelScope.launch(Dispatchers.IO) {
             val result = AssetVerifier.verify(context)

@@ -2,6 +2,7 @@ package com.ocr.core
 
 import android.content.Context
 import android.graphics.Bitmap
+import com.ocr.core.ppocr.PpOcrV6Engine
 import java.io.Closeable
 
 /** An on-device OCR engine. All calls must be made off the main thread. */
@@ -55,6 +56,7 @@ object EngineRegistry {
 
     val entries: List<Entry> = listOf(
         Entry(MlKitEngine.ID, MlKitEngine.NAME) { MlKitEngine() },
+        Entry(PpOcrV6Engine.ID, PpOcrV6Engine.NAME) { ctx -> PpOcrV6Engine(ctx) },
     )
 
     fun find(id: String): Entry = entries.firstOrNull { it.id == id } ?: entries.first { it.id == DEFAULT_ID }

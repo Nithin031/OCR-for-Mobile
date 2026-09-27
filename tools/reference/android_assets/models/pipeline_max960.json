@@ -1,0 +1,50 @@
+{
+  "det_limit_side_len": {
+    "value": 960,
+    "source": "golden/max960/pipeline_config.yaml: SubModules.TextDetection.limit_side_len"
+  },
+  "det_limit_type": {
+    "value": "max",
+    "source": "golden/max960/pipeline_config.yaml: SubModules.TextDetection.limit_type"
+  },
+  "det_max_side_limit": {
+    "value": 4000,
+    "source": "golden/max960/pipeline_config.yaml: SubModules.TextDetection.max_side_limit"
+  },
+  "db_use_dilation": {
+    "value": false,
+    "source": "preprocess_config.json db_use_dilation=null -> PaddleX default: paddlex/inference/models/text_detection/processors.py:290 DBPostProcess.__init__(use_dilation=False)"
+  },
+  "db_score_mode": {
+    "value": "fast",
+    "source": "preprocess_config.json db_score_mode=null -> PaddleX default: text_detection/processors.py:291 score_mode=\"fast\""
+  },
+  "db_box_type": {
+    "value": "quad",
+    "source": "preprocess_config.json db_box_type=null -> PaddleX default: text_detection/processors.py:292 box_type=\"quad\""
+  },
+  "db_min_size": {
+    "value": 3,
+    "source": "text_detection/processors.py:300 self.min_size = 3 (not configurable)"
+  },
+  "rec_batch_size": {
+    "value": 6,
+    "source": "golden/max960/pipeline_config.yaml: SubModules.TextRecognition.batch_size"
+  },
+  "rec_score_thresh": {
+    "value": 0.0,
+    "source": "golden/max960/pipeline_config.yaml: SubModules.TextRecognition.score_thresh"
+  },
+  "rec_norm_scale": {
+    "value": 0.00392156862745098,
+    "source": "text_recognition/processors.py:74 `/ 255`"
+  },
+  "rec_norm_mean": {
+    "value": 0.5,
+    "source": "text_recognition/processors.py:75 `-= 0.5`"
+  },
+  "rec_norm_std": {
+    "value": 0.5,
+    "source": "text_recognition/processors.py:76 `/= 0.5`"
+  }
+}

@@ -27,6 +27,8 @@ dependencies {
     implementation(libs.exifinterface)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.mlkit.text.recognition)
+    implementation(libs.onnxruntime.android)
+    implementation(libs.opencv)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.junit.ext)
