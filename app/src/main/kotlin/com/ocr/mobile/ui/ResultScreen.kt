@@ -21,6 +21,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -138,6 +139,19 @@ private fun AssistantSection(ocr: OcrUi, ai: AiUi, viewModel: MainViewModel) {
     var question by remember { mutableStateOf("") }
 
     Text("Ask the on-device AI (Gemma 3 1B)", style = MaterialTheme.typography.titleMedium)
+    if (ai.kagStatus.isNotEmpty()) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Checkbox(
+                checked = ai.useKnowledge && ai.kagReady,
+                enabled = ai.kagReady && !ai.busy,
+                onCheckedChange = { viewModel.setUseKnowledge(it) },
+            )
+            Column {
+                Text("Use scheme knowledge base (offline KAG)", style = MaterialTheme.typography.bodyMedium)
+                Text(ai.kagStatus, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.secondary)
+            }
+        }
+    }
     Spacer(Modifier.height(8.dp))
 
     val progress = ai.importProgress
@@ -193,6 +207,17 @@ private fun AssistantSection(ocr: OcrUi, ai: AiUi, viewModel: MainViewModel) {
                 Text("Q: ${ai.question}", style = MaterialTheme.typography.labelLarge)
                 Spacer(Modifier.height(6.dp))
                 SelectionContainer { Text(ai.answer, style = MaterialTheme.typography.bodyMedium) }
+                if (ai.sources.isNotEmpty()) {
+                    Spacer(Modifier.height(8.dp))
+                    Text("Knowledge base sources", style = MaterialTheme.typography.labelMedium)
+                    ai.sources.distinctBy { it.title }.forEach { s ->
+                        Text(
+                            "• ${s.title}${s.url?.let { u -> " — $u" }.orEmpty()}",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.secondary,
+                        )
+                    }
+                }
                 Spacer(Modifier.height(8.dp))
                 Text(
                     "AI-generated — check against the document. " +

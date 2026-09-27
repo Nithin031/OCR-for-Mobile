@@ -23,6 +23,9 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import com.ocr.mobile.kag.KagRetriever
+import com.ocr.mobile.kag.KagStore
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
@@ -59,7 +62,14 @@ data class AiUi(
     val linesUsed: Int = 0,
     val linesTotal: Int = 0,
     val error: String? = null,
+    // Offline scheme knowledge base (KAG) from the web app.
+    val kagReady: Boolean = false,
+    val kagStatus: String = "",
+    val useKnowledge: Boolean = true,
+    val sources: List<KagSource> = emptyList(),
 )
+
+data class KagSource(val id: String, val title: String, val url: String?)
 
 const val GOLDEN_RUNNING = "Running golden check…"
 
@@ -88,10 +98,14 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val _errorMessage = MutableSharedFlow<String>(extraBufferCapacity = 1)
     val errorMessage: SharedFlow<String> = _errorMessage.asSharedFlow()
 
+    @Volatile private var kag: KagRetriever? = null
+
     init {
         // Load every engine's models in the background at app start (PP-OCR takes a few seconds).
         EngineRegistry.entries.forEach { warmUp(it.id) }
+        loadKnowledge()
     }
+
 
     fun verifyAssets(context: Context) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -233,16 +247,58 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun setUseKnowledge(on: Boolean) {
+        _ai.update { it.copy(useKnowledge = on) }
+    }
+
+    private fun loadKnowledge() {
+        val app = getApplication<Application>()
+        if (!KagStore.available(app)) return
+        _ai.update { it.copy(kagStatus = "Loading scheme knowledge base…") }
+        viewModelScope.launch(Dispatchers.IO) {
+            runCatching { KagStore.load(app) }
+                .onSuccess { (retriever, info) ->
+                    kag = retriever
+                    _ai.update {
+                        it.copy(kagReady = true, kagStatus = "${info.documents} documents · ${info.chunks} passages · " +
+                            "${info.schemes} schemes in graph")
+                    }
+                }
+                .onFailure { e ->
+                    Log.e("MainViewModel", "KAG database failed to load", e)
+                    _ai.update { it.copy(kagReady = false, useKnowledge = false, kagStatus = "Knowledge base unavailable: ${e.message}") }
+                }
+        }
+    }
+
     fun ask(question: String) {
         val lines = _ocr.value.lines
         if (question.isBlank() || lines.isEmpty() || _ai.value.busy) return
-        val built = DocPrompt.build(lines, question)
+        val retriever = kag.takeIf { _ai.value.useKnowledge }
         _ai.update {
-            it.copy(busy = true, status = "Loading the AI model…", question = question.trim(), answer = null,
-                answerSeconds = null, error = null, linesUsed = built.linesUsed, linesTotal = built.linesTotal)
+            it.copy(busy = true, status = if (retriever != null) "Searching the scheme knowledge base…" else "Loading the AI model…",
+                question = question.trim(), answer = null, answerSeconds = null, error = null, sources = emptyList())
         }
         viewModelScope.launch {
             runCatching {
+                // KAG retrieval (keyword + graph) runs off the main thread; the OCR text names the schemes in context.
+                val (built, sources) = withContext(Dispatchers.Default) {
+                    if (retriever == null) {
+                        DocPrompt.build(lines, question) to emptyList()
+                    } else {
+                        val ocrText = lines.joinToString("\n")
+                        val q = retriever.understand(question, contextSchemes = retriever.graph.detectSchemeMentions(ocrText))
+                        val result = retriever.retrieve(q)
+                        val (context, used) = KagRetriever.buildContext(result, DocPrompt.MAX_KAG_CHARS)
+                        Log.i("MainViewModel", "KAG intent=${q.intent} schemes=${result.schemes.map { it.code }} " +
+                            "chunks=${result.chunks.size} facts=${result.facts.size} used=${used.size}")
+                        DocPrompt.buildWithKnowledge(lines, question, context) to used
+                    }
+                }
+                _ai.update {
+                    it.copy(status = "Loading the AI model…", linesUsed = built.linesUsed, linesTotal = built.linesTotal,
+                        sources = sources.map { s -> KagSource(s.id, s.title, s.url) })
+                }
                 gemma.load()
                 _ai.update { it.copy(status = "Thinking… (on this phone, can take up to a minute)") }
                 val start = System.currentTimeMillis()

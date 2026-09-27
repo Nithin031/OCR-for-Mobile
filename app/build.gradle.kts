@@ -35,6 +35,10 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+    androidResources {
+        // kag.db is opened with AssetManager.openFd(), which needs the asset stored uncompressed.
+        noCompress += "db"
+    }
     buildFeatures {
         compose = true
     }
@@ -62,6 +66,7 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android)
 
     testImplementation(libs.junit)
+    testImplementation(libs.org.json)
     androidTestImplementation(libs.junit.ext)
     debugImplementation(libs.compose.ui.tooling)
 }
