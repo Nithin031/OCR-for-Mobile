@@ -36,13 +36,16 @@ class GemmaEngine(context: Context) {
     val modelFile: File?
         get() {
             val all = models()
-            return all.firstOrNull { it.name == prefs.getString(KEY_ACTIVE, null) } ?: all.firstOrNull()
+            return all.firstOrNull { it.name == prefs.getString(KEY_ACTIVE, null) }
+                ?: all.firstOrNull { !hasFailed(it.name) } ?: all.firstOrNull()
         }
 
     fun hasModel(): Boolean = modelFile != null
 
+    /** Choosing a model explicitly also gives a previously crashed model another try. */
     fun setActive(name: String) {
-        prefs.edit().putString(KEY_ACTIVE, name).apply()
+        val failed = prefs.getStringSet(KEY_FAILED, emptySet()).orEmpty() - name
+        prefs.edit().putString(KEY_ACTIVE, name).putStringSet(KEY_FAILED, failed).apply()
     }
 
     /** Copies the picked .task/.litertlm file into app storage under its own name and makes it active. */
@@ -94,15 +97,43 @@ class GemmaEngine(context: Context) {
             .setMaxTokens(MAX_TOKENS)
             .setPreferredBackend(LlmInference.Backend.CPU)
             .build()
-        llm = LlmInference.createFromOptions(appContext, options)
+        // A native crash in the engine kills the process and cannot be caught here, so leave a marker
+        // that the next start can see (see recoverFromCrash()).
+        prefs.edit().putString(KEY_IN_FLIGHT, file.name).commit()
+        llm = try {
+            LlmInference.createFromOptions(appContext, options)
+        } catch (e: Throwable) {
+            prefs.edit().remove(KEY_IN_FLIGHT).apply()   // an ordinary error, not a crash
+            throw e
+        }
         loadedFile = file
         System.currentTimeMillis() - start
     }
 
     suspend fun generate(prompt: String): String = withContext(modelThread) {
         val engine = llm ?: error("Model is not loaded")
-        engine.generateResponse(prompt)
+        loadedFile?.let { prefs.edit().putString(KEY_IN_FLIGHT, it.name).commit() }
+        try {
+            engine.generateResponse(prompt)
+        } finally {
+            prefs.edit().remove(KEY_IN_FLIGHT).apply()   // reached unless the process died
+        }
     }
+
+    /**
+     * If the app died while a model was loading or answering, that model is set aside and another
+     * imported model becomes active. Returns the crashed model's file name, or null.
+     */
+    fun recoverFromCrash(): String? {
+        val crashed = prefs.getString(KEY_IN_FLIGHT, null) ?: return null
+        val failed = prefs.getStringSet(KEY_FAILED, emptySet()).orEmpty() + crashed
+        val fallback = models().firstOrNull { it.name !in failed }?.name
+        prefs.edit().remove(KEY_IN_FLIGHT).putStringSet(KEY_FAILED, failed)
+            .apply { if (fallback != null) putString(KEY_ACTIVE, fallback) }.commit()
+        return crashed
+    }
+
+    fun hasFailed(name: String): Boolean = name in prefs.getStringSet(KEY_FAILED, emptySet()).orEmpty()
 
     /** Frees the model on its own thread (after any running generation) without blocking the caller. */
     fun release() {
@@ -120,6 +151,8 @@ class GemmaEngine(context: Context) {
         /** Prompt + answer tokens. 1280 is the smallest KV-cache size of the Gemma 3 1B .task variants. */
         const val MAX_TOKENS = 1280
         private const val KEY_ACTIVE = "active_model"
+        private const val KEY_IN_FLIGHT = "loading_model"
+        private const val KEY_FAILED = "crashed_models"
         private val EXTENSIONS = setOf("task", "litertlm")
 
         /** Keeps the picked file's name (letters, digits, . _ -); rejects anything that is not a model file. */

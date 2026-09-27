@@ -80,6 +80,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     private val gemma = GemmaEngine(application)
 
+    // A model that crashed the app last time (native engine crash) is set aside before anything else runs.
+    private val crashedModel: String? = gemma.recoverFromCrash()
+
     // Engines are created and initialized lazily, once, off the main thread.
     private val engines = mutableMapOf<String, OcrEngine>()
     private val enginesLock = Mutex()
@@ -94,7 +97,10 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val _ocr = MutableStateFlow(OcrUi())
     val ocrState: StateFlow<OcrUi> = _ocr.asStateFlow()
 
-    private val _ai = MutableStateFlow(withModels(AiUi()))
+    private val _ai = MutableStateFlow(withModels(AiUi(error = crashedModel?.let {
+        "${GemmaEngine.friendlyName(it)} crashed while running on this phone, so the app switched back to " +
+            "another model. Select it again to retry."
+    })))
     val aiState: StateFlow<AiUi> = _ai.asStateFlow()
 
     // One-shot errors shown as Snackbars on the home screen.
