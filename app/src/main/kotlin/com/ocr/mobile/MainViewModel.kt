@@ -67,6 +67,9 @@ data class AiUi(
     val kagStatus: String = "",
     val useKnowledge: Boolean = true,
     val sources: List<KagSource> = emptyList(),
+    // Imported on-device models (file names) and the active one.
+    val models: List<String> = emptyList(),
+    val activeModel: String? = null,
 )
 
 data class KagSource(val id: String, val title: String, val url: String?)
@@ -91,7 +94,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val _ocr = MutableStateFlow(OcrUi())
     val ocrState: StateFlow<OcrUi> = _ocr.asStateFlow()
 
-    private val _ai = MutableStateFlow(AiUi(modelPresent = gemma.hasModel()))
+    private val _ai = MutableStateFlow(withModels(AiUi()))
     val aiState: StateFlow<AiUi> = _ai.asStateFlow()
 
     // One-shot errors shown as Snackbars on the home screen.
@@ -239,12 +242,24 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         _ai.update { it.copy(importProgress = 0f, error = null) }
         viewModelScope.launch {
             runCatching { gemma.importModel(uri) { p -> _ai.update { s -> s.copy(importProgress = p) } } }
-                .onSuccess { _ai.update { it.copy(importProgress = null, modelPresent = gemma.hasModel()) } }
+                .onSuccess { _ai.update { withModels(it.copy(importProgress = null)) } }
                 .onFailure { e ->
                     Log.e("MainViewModel", "Model import failed", e)
-                    _ai.update { it.copy(importProgress = null, modelPresent = gemma.hasModel(), error = "Import failed: ${e.message}") }
+                    _ai.update { withModels(it.copy(importProgress = null, error = "Import failed: ${e.message}")) }
                 }
         }
+    }
+
+    /** Switches the on-device model; it is loaded on the next question. */
+    fun selectModel(fileName: String) {
+        if (_ai.value.busy) return
+        gemma.setActive(fileName)
+        _ai.update { withModels(it.copy(answer = null, error = null)) }
+    }
+
+    private fun withModels(s: AiUi): AiUi {
+        val active = gemma.modelFile?.name
+        return s.copy(modelPresent = active != null, models = gemma.models().map { it.name }, activeModel = active)
     }
 
     fun setUseKnowledge(on: Boolean) {

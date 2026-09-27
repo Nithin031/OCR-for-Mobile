@@ -22,6 +22,11 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.TextButton
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import com.ocr.mobile.GemmaEngine
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -138,7 +143,8 @@ private fun AssistantSection(ocr: OcrUi, ai: AiUi, viewModel: MainViewModel) {
     }
     var question by remember { mutableStateOf("") }
 
-    Text("Ask the on-device AI (Gemma 3 1B)", style = MaterialTheme.typography.titleMedium)
+    val modelName = ai.activeModel?.let { GemmaEngine.friendlyName(it) } ?: "Gemma"
+    Text("Ask the on-device AI ($modelName)", style = MaterialTheme.typography.titleMedium)
     if (ai.kagStatus.isNotEmpty()) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Checkbox(
@@ -168,10 +174,11 @@ private fun AssistantSection(ocr: OcrUi, ai: AiUi, viewModel: MainViewModel) {
                 style = MaterialTheme.typography.bodyMedium,
             )
             Spacer(Modifier.height(8.dp))
-            Button(onClick = { picker.launch(arrayOf("*/*")) }) { Text("Import model file (.task)") }
+            Button(onClick = { picker.launch(arrayOf("*/*")) }) { Text("Import model file (.task or .litertlm)") }
         }
         else -> {
             val canAsk = !ai.busy && ocr.lines.isNotEmpty()
+            ModelPicker(ai, onSelect = { viewModel.selectModel(it) }, onImport = { picker.launch(arrayOf("*/*")) })
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedButton(enabled = canAsk, onClick = { viewModel.ask(DocPrompt.SUMMARIZE) }) { Text("Summarize") }
                 OutlinedButton(enabled = canAsk, onClick = { viewModel.ask(DocPrompt.ASKS_FOR) }) { Text("What does it ask for?") }
@@ -217,4 +224,24 @@ private fun AssistantSection(ocr: OcrUi, ai: AiUi, viewModel: MainViewModel) {
             }
         }
     }
+}
+
+/** Imported models as chips (tap to switch) plus a way to import another .task/.litertlm file. */
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun ModelPicker(ai: AiUi, onSelect: (String) -> Unit, onImport: () -> Unit) {
+    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.Center) {
+        if (ai.models.size > 1) {
+            ai.models.forEach { name ->
+                FilterChip(
+                    selected = name == ai.activeModel,
+                    enabled = !ai.busy,
+                    onClick = { onSelect(name) },
+                    label = { Text(GemmaEngine.friendlyName(name)) },
+                )
+            }
+        }
+        TextButton(enabled = !ai.busy, onClick = onImport) { Text("Import another model") }
+    }
+    Spacer(Modifier.height(4.dp))
 }
