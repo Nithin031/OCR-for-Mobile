@@ -6,6 +6,7 @@ import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
+import com.google.mlkit.vision.text.TextRecognizerOptionsInterface
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.io.Closeable
 import kotlin.coroutines.resume
@@ -34,10 +35,12 @@ data class OcrOutput(
     val skewDegrees: Float = 0f,
 )
 
-/** On-device OCR with the bundled ML Kit Latin text recognizer (no network, no model download). */
-class MlKitOcr : Closeable {
+/** On-device OCR with a bundled ML Kit recognizer (Latin by default; no network, no model download). */
+class MlKitOcr(
+    options: TextRecognizerOptionsInterface = TextRecognizerOptions.DEFAULT_OPTIONS,
+) : Closeable {
 
-    private val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
+    private val recognizer = TextRecognition.getClient(options)
 
     suspend fun recognize(bitmap: Bitmap): OcrOutput {
         val start = System.currentTimeMillis()

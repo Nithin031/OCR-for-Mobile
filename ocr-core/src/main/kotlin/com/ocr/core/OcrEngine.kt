@@ -56,6 +56,7 @@ object EngineRegistry {
 
     val entries: List<Entry> = listOf(
         Entry(MlKitEngine.ID, MlKitEngine.NAME) { MlKitEngine() },
+        Entry(MlKitEngine.HINDI_ID, MlKitEngine.HINDI_NAME) { MlKitEngine.hindi() },
         Entry(PpOcrV6Engine.ID, PpOcrV6Engine.NAME) { ctx -> PpOcrV6Engine(ctx) },
     )
 
