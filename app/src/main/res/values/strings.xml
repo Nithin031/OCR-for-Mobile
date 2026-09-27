@@ -51,6 +51,7 @@
 
     <!-- Voice (speech to text / text to speech, on-device) -->
     <string name="voice_input">Ask by voice</string>
+    <string name="stop_listening">Stop listening</string>
     <string name="listening">Listening… speak your question in %1$s</string>
     <string name="voice_missing_pack">Offline voice input for %1$s is not installed on this phone yet.</string>
     <string name="voice_not_offline">Offline voice input is not available for %1$s on this phone. Please type the question.</string>

@@ -44,6 +44,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -101,9 +102,7 @@ fun ResultScreen(bitmap: Bitmap, viewModel: MainViewModel) {
                     .padding(vertical = 4.dp),
             )
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-            OcrSection(ocr, onRunMlKit = { viewModel.rerun(EngineRegistry.FALLBACK_ID) }) { text ->
-                ReadAloudButton(text, key = "ocr", tts = tts, state = ttsState)
-            }
+            OcrSection(ocr, onRunMlKit = { viewModel.rerun(EngineRegistry.FALLBACK_ID) })
             if (ocr.fields.isNotEmpty()) {
                 HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
                 FieldsSection(ocr.fields)
@@ -150,6 +149,17 @@ private fun AssistantSection(ocr: OcrUi, ai: AiUi, viewModel: MainViewModel, tts
     }
     var question by remember { mutableStateOf("") }
     val (voice, voiceState) = rememberVoiceQuestion()
+    var spokenQuestion by remember { mutableStateOf(false) }   // the box text came from the microphone
+    var readNextAnswer by remember { mutableStateOf(false) }   // read the coming answer aloud
+
+    // A question asked by voice gets its answer read aloud as soon as it arrives.
+    val answer = ai.answer
+    LaunchedEffect(answer) {
+        if (answer != null && readNextAnswer) {
+            readNextAnswer = false
+            if (tts.speak(AnswerFormatter.spokenText(answer))) ttsState.current = "answer"
+        }
+    }
 
     val modelName = ai.activeModel?.let { GemmaEngine.friendlyName(it) } ?: "Gemma"
     Text(stringResource(R.string.ask_ai_title, modelName), style = MaterialTheme.typography.titleMedium)
@@ -199,16 +209,23 @@ private fun AssistantSection(ocr: OcrUi, ai: AiUi, viewModel: MainViewModel, tts
             Spacer(Modifier.height(8.dp))
             OutlinedTextField(
                 value = question,
-                onValueChange = { question = it },
+                onValueChange = { question = it; spokenQuestion = false },
                 label = { Text(stringResource(R.string.question_hint)) },
                 modifier = Modifier.fillMaxWidth(),
-                trailingIcon = {
-                    VoiceQuestionButton(voice, voiceState, enabled = !ai.busy, onText = { question = it })
-                },
             )
             VoiceQuestionStatus(voice, voiceState)
             Spacer(Modifier.height(8.dp))
-            Button(enabled = canAsk && question.isNotBlank(), onClick = { viewModel.ask(question) }) { Text(stringResource(R.string.ask)) }
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                Button(enabled = canAsk && question.isNotBlank(), onClick = {
+                    readNextAnswer = spokenQuestion   // a spoken question gets a spoken answer
+                    viewModel.ask(question)
+                }) { Text(stringResource(R.string.ask)) }
+                // Voice only fills the question box; the user checks it and taps Ask (nothing auto-sends).
+                VoiceQuestionButton(voice, voiceState, enabled = !ai.busy, wide = true, onText = {
+                    question = it
+                    spokenQuestion = true
+                })
+            }
         }
     }
 
@@ -229,9 +246,8 @@ private fun AssistantSection(ocr: OcrUi, ai: AiUi, viewModel: MainViewModel, tts
         Card(modifier = Modifier.fillMaxWidth()) {
             Column(modifier = Modifier.padding(12.dp)) {
                 Text(stringResource(R.string.question_label, ai.question.orEmpty()), style = MaterialTheme.typography.labelLarge)
-                Spacer(Modifier.height(6.dp))
-                FormattedAnswer(ai.answer, ai.sources)
                 ReadAloudButton(AnswerFormatter.spokenText(ai.answer), key = "answer", tts = tts, state = ttsState)
+                FormattedAnswer(ai.answer, ai.sources)
                 Spacer(Modifier.height(8.dp))
                 Text(
                     stringResource(R.string.ai_footer, ai.linesUsed, ai.linesTotal, "%.1f".format(ai.answerSeconds ?: 0.0)),

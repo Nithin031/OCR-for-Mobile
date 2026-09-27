@@ -8,6 +8,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -56,6 +57,7 @@ fun VoiceQuestionButton(
     state: VoiceQuestionState,
     enabled: Boolean,
     onText: (String) -> Unit,
+    wide: Boolean = false,
 ) {
     val context = LocalContext.current
     val tag = SpeechLanguages.tagFor(AppLanguage.get(context))
@@ -119,19 +121,24 @@ fun VoiceQuestionButton(
         if (granted) listen() else state.message = sPermission
     }
 
-    IconButton(
-        enabled = enabled,
-        onClick = {
-            when {
-                state.listening -> { voice.stop(); state.listening = false; state.message = null }
-                ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) ==
-                    PackageManager.PERMISSION_GRANTED -> listen()
-                else -> permission.launch(Manifest.permission.RECORD_AUDIO)
-            }
-        },
-    ) {
-        // Material core icons have no microphone; an emoji keeps the APK free of the extended icon set.
-        Text(if (state.listening) "⏹" else "🎤", style = MaterialTheme.typography.titleMedium)
+    val onClick = {
+        when {
+            state.listening -> { voice.stop(); state.listening = false; state.message = null }
+            ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) ==
+                PackageManager.PERMISSION_GRANTED -> listen()
+            else -> permission.launch(Manifest.permission.RECORD_AUDIO)
+        }
+    }
+    // Material core icons have no microphone; emoji keep the APK free of the extended icon set.
+    val icon = if (state.listening) "⏹" else "🎤"
+    if (wide) {
+        OutlinedButton(enabled = enabled, onClick = onClick) {
+            Text("$icon " + stringResource(if (state.listening) R.string.stop_listening else R.string.voice_input))
+        }
+    } else {
+        IconButton(enabled = enabled, onClick = onClick) {
+            Text(icon, style = MaterialTheme.typography.titleMedium)
+        }
     }
 }
 

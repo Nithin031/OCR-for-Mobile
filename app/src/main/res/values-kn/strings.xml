@@ -51,6 +51,7 @@
 
     <!-- Voice (speech to text / text to speech, on-device) -->
     <string name="voice_input">ಧ್ವನಿಯಲ್ಲಿ ಕೇಳಿ</string>
+    <string name="stop_listening">ಆಲಿಸುವುದನ್ನು ನಿಲ್ಲಿಸಿ</string>
     <string name="listening">ಆಲಿಸುತ್ತಿದೆ… ನಿಮ್ಮ ಪ್ರಶ್ನೆಯನ್ನು %1$s ನಲ್ಲಿ ಹೇಳಿ</string>
     <string name="voice_missing_pack">ಈ ಫೋನ್‌ನಲ್ಲಿ %1$s ಗಾಗಿ ಆಫ್‌ಲೈನ್ ಧ್ವನಿ ಗುರುತಿಸುವಿಕೆ ಇನ್ನೂ ಸ್ಥಾಪನೆಯಾಗಿಲ್ಲ.</string>
     <string name="voice_not_offline">ಈ ಫೋನ್‌ನಲ್ಲಿ %1$s ಗಾಗಿ ಆಫ್‌ಲೈನ್ ಧ್ವನಿ ಗುರುತಿಸುವಿಕೆ ಲಭ್ಯವಿಲ್ಲ. ದಯವಿಟ್ಟು ಪ್ರಶ್ನೆಯನ್ನು ಟೈಪ್ ಮಾಡಿ.</string>
