@@ -174,7 +174,7 @@ private fun AssistantSection(ocr: OcrUi, ai: AiUi, viewModel: MainViewModel) {
                 style = MaterialTheme.typography.bodyMedium,
             )
             Spacer(Modifier.height(8.dp))
-            Button(onClick = { picker.launch(arrayOf("*/*")) }) { Text("Import model file (.task or .litertlm)") }
+            Button(onClick = { picker.launch(arrayOf("*/*")) }) { Text("Import model file (.task)") }
         }
         else -> {
             val canAsk = !ai.busy && ocr.lines.isNotEmpty()
@@ -226,7 +226,7 @@ private fun AssistantSection(ocr: OcrUi, ai: AiUi, viewModel: MainViewModel) {
     }
 }
 
-/** Imported models as chips (tap to switch) plus a way to import another .task/.litertlm file. */
+/** Imported models as chips (tap to switch) plus a way to import another .task file. */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun ModelPicker(ai: AiUi, onSelect: (String) -> Unit, onImport: () -> Unit) {

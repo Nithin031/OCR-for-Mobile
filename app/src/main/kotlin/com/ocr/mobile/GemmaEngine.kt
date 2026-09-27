@@ -11,7 +11,7 @@ import java.io.File
 import java.util.concurrent.Executors
 
 /**
- * On-device Gemma (MediaPipe LLM Inference, CPU): Gemma 3 1B IT int4 (.task) or Gemma 4 E2B (.litertlm).
+ * On-device Gemma 3 1B IT int4 (MediaPipe LLM Inference, CPU, .task files).
  * Model files are never downloaded by the app: the user imports them once from local storage. Each
  * imported file keeps its own name under filesDir/models; one of them is active.
  * All model calls run on one dedicated thread.
@@ -48,7 +48,7 @@ class GemmaEngine(context: Context) {
         prefs.edit().putString(KEY_ACTIVE, name).putStringSet(KEY_FAILED, failed).apply()
     }
 
-    /** Copies the picked .task/.litertlm file into app storage under its own name and makes it active. */
+    /** Copies the picked .task file into app storage under its own name and makes it active. */
     suspend fun importModel(uri: Uri, onProgress: (Float) -> Unit) {
         withContext(modelThread) { unload() }
         val name = withContext(Dispatchers.IO) {
@@ -153,18 +153,18 @@ class GemmaEngine(context: Context) {
         private const val KEY_ACTIVE = "active_model"
         private const val KEY_IN_FLIGHT = "loading_model"
         private const val KEY_FAILED = "crashed_models"
-        private val EXTENSIONS = setOf("task", "litertlm")
+        private val EXTENSIONS = setOf("task")
 
         /** Keeps the picked file's name (letters, digits, . _ -); rejects anything that is not a model file. */
         fun safeFileName(displayName: String): String {
             val clean = displayName.trim().replace(Regex("""[^A-Za-z0-9._-]"""), "_").trim('.', '_')
             require(clean.substringAfterLast('.', "").lowercase() in EXTENSIONS) {
-                "Pick a Gemma model file ending in .task or .litertlm (got \"$displayName\")"
+                "Pick a Gemma model file ending in .task (got \"$displayName\")"
             }
             return clean
         }
 
-        /** "gemma-4-E2B-it.litertlm" -> "Gemma 4 E2B", "gemma3-1b-it-int4.task" -> "Gemma 3 1B". */
+        /** "gemma3-1b-it-int4.task" -> "Gemma 3 1B". */
         fun friendlyName(fileName: String): String {
             val base = fileName.substringBeforeLast('.').lowercase()
             val m = Regex("""gemma-?(\d+)[-_]?(e?\d+b)""").find(base) ?: return fileName.substringBeforeLast('.')
